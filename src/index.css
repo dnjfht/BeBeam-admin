@@ -1,3 +1,75 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+::-webkit-scrollbar {
+  width: 8px;
+
+  /* 스크롤바의 너비 */
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+  /* 트랙의 배경 색상 */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ffffff;
+  border-radius: 10px;
+  /* 핸들의 배경 색상 */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ffffff; /* 마우스 오버 시 핸들의 배경 색상 */
+}
+
+/* 다크모드 스크롤바 스타일 */
+/* .dark::-webkit-scrollbar-thumb */
+
+body {
+  margin: 0;
+  font-family: "Pretendard-Regular";
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+@font-face {
+  font-family: "Pretendard-Regular";
+  src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
+    format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+.modalContentScroll {
+  width: 100%;
+  height: 76%;
+  padding: 0 20px;
+  box-sizing: border-box;
+  margin-top: 1rem;
+  overflow-y: scroll;
+}
+
+.modalContentScroll::-webkit-scrollbar {
+  width: 5px; /* 스크롤바의 너비 */
+}
+
+.modalContentScroll::-webkit-scrollbar-track {
+  background: #f1f1f1; /* 스크롤바의 배경색 */
+  border-radius: 100px;
+}
+
+.modalContentScroll::-webkit-scrollbar-thumb {
+  background: #ffc35c; /* 스크롤바 핸들(가로 또는 세로로 움직이는 부분)의 색 */
+  border-radius: 100px;
+}
+
+.modalContentScroll::-webkit-scrollbar-thumb:hover {
+  background: #ffc35c; /* 스크롤바 핸들을 마우스로 가리킬 때의 색 */
+}
