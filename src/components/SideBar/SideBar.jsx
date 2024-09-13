@@ -1,19 +1,20 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IsLoginState } from "../../recoil/login";
 import { useSetRecoilState } from "recoil";
-import Util from "./Util";
 import Button from "../button/Button";
 import { Toast } from "../toast/Toast";
+import SideBarMenu from "./SideBarMenu";
 
-import { AiFillHome } from "react-icons/ai";
-import { FaUser, FaPeopleGroup } from "react-icons/fa6";
 import { CiInstagram, CiGlobe, CiLogin } from "react-icons/ci";
 import { PiHandSwipeLeft } from "react-icons/pi";
 
 export default function SideBar({ isSidebarOpen, setIsSidebarOpen }) {
-  const setIsLogin = useSetRecoilState(IsLoginState);
-
   const navigate = useNavigate();
+
+  const setIsLogin = useSetRecoilState(IsLoginState);
+  const [dropMenu, setDropMenu] = useState({ num: 0, isActive: false });
+
   return (
     <div
       className={`${
@@ -45,23 +46,11 @@ export default function SideBar({ isSidebarOpen, setIsSidebarOpen }) {
         />
       </div>
 
-      <ul className="w-full h-sidebar-menu-height pt-8 pb-4 text-[0.875rem] flex flex-col gap-y-2 overflow-y-scroll">
-        <Util
-          icon={<AiFillHome />}
-          text="HOME"
-          setIsSidebarOpen={setIsSidebarOpen}
-        />
-        <Util
-          icon={<FaUser />}
-          text="USERS"
-          setIsSidebarOpen={setIsSidebarOpen}
-        />
-        <Util
-          icon={<FaPeopleGroup />}
-          text="MEETINGS"
-          setIsSidebarOpen={setIsSidebarOpen}
-        />
-      </ul>
+      <SideBarMenu
+        dropMenu={dropMenu}
+        setDropMenu={setDropMenu}
+        setIsSidebarOpen={setIsSidebarOpen}
+      />
 
       <div className="w-full pt-6 border-t-[1px] border-solid border-[rgba(255,255,255,0.3)] flex items-center gap-x-2 text-[1.3rem]">
         <Button
