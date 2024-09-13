@@ -60,7 +60,7 @@ export default function SideBarMenu({
   ];
 
   return (
-    <ul className="flex flex-col w-full pt-8 pb-4 overflow-y-scroll h-sidebar-menu-height gap-y-2">
+    <ul className="flex flex-col w-full pt-8 pb-4 overflow-y-scroll sidebarScrollbar h-sidebar-menu-height gap-y-2">
       {sideBarMenu.map((menu, index) => {
         return (
           <li
