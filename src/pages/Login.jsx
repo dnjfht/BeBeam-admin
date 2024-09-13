@@ -1,17 +1,13 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import Typewriter from "typewriter-effect";
 import Input from "../components/input/TextInput";
 import useInput from "../customHook/useInput";
 import Button from "../components/button/Button";
-import { btnBasicStyle, btnStyle, textInputStyle } from "../constants";
-
-import { HiOutlineXMark } from "react-icons/hi2";
 import { Toast } from "../components/toast/Toast";
 
-const Login = ({ onLogin, isLogin, setIsLogin }) => {
-  const navigate = useNavigate();
+import { btnBasicStyle, btnStyle, textInputStyle } from "../constants";
+import { HiOutlineXMark } from "react-icons/hi2";
 
+const Login = ({ isLogin, setIsLogin, setIsAfterLogin }) => {
   const [id, onChangeId, onDeleteId] = useInput();
   const [pw, onChangePW, onDeletePW] = useInput();
 
@@ -25,22 +21,15 @@ const Login = ({ onLogin, isLogin, setIsLogin }) => {
 
     if (id === adminAccount.id && pw === adminAccount.pw) {
       setIsLogin(true);
+      setIsAfterLogin(true);
       localStorage.setItem("isLogin", JSON.stringify(true));
       Toast("🥰로그인 하였습니다.!🥰");
-    } else {
+    } else if (!isLogin) {
       setIsLogin(false);
       localStorage.setItem("isLogin", JSON.stringify(false));
       Toast("😬ID 또는 PW가 일치하지 않습니다.!😬");
     }
   };
-
-  useEffect(() => {
-    if (isLogin) {
-      navigate("/");
-    } else {
-      navigate("/login");
-    }
-  }, [isLogin, navigate]);
 
   return (
     <div className="w-full md:h-[100vh] bg-black md:flex">
