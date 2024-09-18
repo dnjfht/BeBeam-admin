@@ -23,6 +23,7 @@ const style = {
   borderRadius: 4,
   boxShadow: 8,
   p: 3,
+  overflowY: "scroll",
 };
 
 export default function BasicModal({ isModalOpen, setIsModalOpen, children }) {
