@@ -1,10 +1,11 @@
 // 유저 상세 정보
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { TabState } from "../../../../recoil/content";
 import Button from "../../../button/Button";
 import BasicTab from "../../../tab/BasicTab";
+import MeetingCard from "../../../tab/MeetingCard";
 
 import { FaCaretDown, FaCaretUp } from "react-icons/fa6";
 import { PiCakeFill, PiGenderIntersexLight, PiMedalFill } from "react-icons/pi";
@@ -12,45 +13,45 @@ import { MdLocationPin, MdOutlineOnlinePrediction } from "react-icons/md";
 import { BsCalendar2DateFill, BsClipboardCheckFill } from "react-icons/bs";
 import { TbMessageReportFilled } from "react-icons/tb";
 
-export default function UserDetails({ userId, datas }) {
+export default function UserDetails({ userId, datas, setIsModalOpen }) {
   const [isDropDown, setIsDropDown] = useState(false);
   const tab = useRecoilValue(TabState);
 
   // api가 없으니 일단 이런 느낌으로.
   const data = datas.find((data) => data.id === userId);
   const userDetailData = [
-    { icon: <PiCakeFill />, type: "생일", text: data.생일 },
-    { icon: <PiGenderIntersexLight />, type: "성별", text: data.성별 },
-    { icon: <MdLocationPin />, type: "주소", text: data.주소 },
+    { icon: <PiCakeFill />, type: "생일", text: data?.생일 ?? "" },
+    { icon: <PiGenderIntersexLight />, type: "성별", text: data?.성별 ?? "" },
+    { icon: <MdLocationPin />, type: "주소", text: data?.주소 ?? "" },
     {
       icon: <BsCalendar2DateFill />,
       type: "회원가입 일자",
-      text: data["회원가입 일자"],
+      text: data?.["회원가입 일자"] ?? "",
     },
     {
       icon: <PiMedalFill />,
       type: "회원 등급",
-      text: data["회원 등급"],
+      text: data?.["회원 등급"] ?? "",
     },
     {
       icon: <BsClipboardCheckFill />,
       type: "정기모임 참여 횟수",
-      text: data["정기모임 참여 횟수"],
+      text: data?.["정기모임 참여 횟수"] ?? "",
     },
     {
       icon: <BsClipboardCheckFill />,
       type: "소모임 참여 횟수",
-      text: data["소모임 참여 횟수"],
+      text: data?.["소모임 참여 횟수"] ?? "",
     },
     {
       icon: <TbMessageReportFilled />,
       type: "신고 횟수",
-      text: data["신고 횟수"],
+      text: data?.["신고 횟수"] ?? "",
     },
     {
       icon: <MdOutlineOnlinePrediction />,
       type: "회원 상태",
-      text: data["회원 상태"],
+      text: data?.["회원 상태"] ?? "",
     },
   ];
 
@@ -107,6 +108,12 @@ export default function UserDetails({ userId, datas }) {
         ]
       : [];
 
+  useEffect(() => {
+    if (data === undefined) {
+      setIsModalOpen(false);
+    }
+  }, [data]);
+
   return (
     <div className="w-full text-[#121212]">
       <h1 className="text-[1.2rem] font-bold">유저 상세 정보</h1>
@@ -119,35 +126,33 @@ export default function UserDetails({ userId, datas }) {
               : "border-transparent"
           } border-b-[1px] border-solid 2sm:flex items-center justify-between transition-all duration-700 2sm:text-left 3sm:text-center`}
         >
-          <div className="items-center 2sm:flex gap-x-2">
-            <div className="sm:w-32 2sm:w-48 3sm:w-48 p-1 box-border mx-auto rounded-full aspect-square shadow-[0_10px_25px_0_#abb4c6]">
-              <img
-                className="object-cover w-full rounded-full aspect-square 2sm:mx-0"
-                src={data["프로필 이미지"]}
-                alt="profile_img"
-              />
-            </div>
+          <div className="xl:w-28 lg:w-32 sm:w-36 2sm:w-40 3sm:w-48 p-1 box-border mx-auto rounded-full aspect-square shadow-[0_10px_25px_0_#abb4c6]">
+            <img
+              className="object-cover w-full rounded-full aspect-square 2sm:mx-0"
+              src={data?.["프로필 이미지"] ?? ""}
+              alt="profile_img"
+            />
+          </div>
 
-            <div className="mt-6 2sm:ml-2 2sm:mt-0">
-              <p className="text-[1.1rem]">{data["닉네임"]}</p>
+          <div className="mt-6 2sm:ml-2 2sm:mt-0">
+            <p className="text-[1.1rem]">{data?.["닉네임"] ?? ""}</p>
 
-              <ul className="flex flex-col flex-wrap items-center w-full 2sm:mt-2 3sm:mt-5 2sm:flex-row 2sm:gap-x-6 2sm:gap-y-0 gap-y-2">
-                <li>
-                  <p className="text-[#9a9a9a] text-[0.875rem]">이름</p>
-                  <p>{data["이름"]}</p>
-                </li>
+            <ul className="flex flex-col flex-wrap items-center w-full 2sm:mt-2 3sm:mt-5 2sm:flex-row 2sm:gap-x-6 2sm:gap-y-0 gap-y-2">
+              <li>
+                <p className="text-[#9a9a9a] text-[0.875rem]">이름</p>
+                <p>{data?.["이름"] ?? ""}</p>
+              </li>
 
-                <li>
-                  <p className="text-[#9a9a9a] text-[0.875rem]">핸드폰 번호</p>
-                  <p>{data["핸드폰 번호"]}</p>
-                </li>
+              <li>
+                <p className="text-[#9a9a9a] text-[0.875rem]">핸드폰 번호</p>
+                <p>{data?.["핸드폰 번호"] ?? ""}</p>
+              </li>
 
-                <li>
-                  <p className="text-[#9a9a9a] text-[0.875rem]">이메일</p>
-                  <p>{data["이메일"]}</p>
-                </li>
-              </ul>
-            </div>
+              <li>
+                <p className="text-[#9a9a9a] text-[0.875rem]">이메일</p>
+                <p>{data?.["이메일"] ?? ""}</p>
+              </li>
+            </ul>
           </div>
 
           <Button
@@ -155,7 +160,7 @@ export default function UserDetails({ userId, datas }) {
             onClick={() => {
               setIsDropDown((prev) => !prev);
             }}
-            styles="text-[#737373] 2sm:mt-0 mt-4"
+            styles="mt-4 text-center 2sm:mt-0 text-[#737373]"
           />
         </div>
 
@@ -166,7 +171,10 @@ export default function UserDetails({ userId, datas }) {
         >
           {userDetailData.map((user) => {
             return (
-              <li className="mb-2 p-2 box-border bg-[#d9dfe5] rounded-lg shadow-inner">
+              <li
+                key={user.id}
+                className="mb-2 p-2 box-border bg-[#d9dfe5] rounded-lg shadow-inner"
+              >
                 <div className="flex items-center gap-x-1">
                   {user.icon}
                   {user.type}
@@ -178,7 +186,13 @@ export default function UserDetails({ userId, datas }) {
         </ul>
       </div>
 
-      <BasicTab tabList={tabList} datas={meetingDatas} />
+      <BasicTab tabList={tabList}>
+        <ul className="grid grid-cols-1 lg:grid-cols-3 2sm:grid-cols-2 gap-x-4">
+          {meetingDatas.map((data) => (
+            <MeetingCard data={data} />
+          ))}
+        </ul>
+      </BasicTab>
     </div>
   );
 }

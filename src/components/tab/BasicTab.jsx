@@ -6,7 +6,7 @@ import { TabContext } from "@mui/lab";
 import { Box, Tab, Tabs } from "@mui/material";
 import TabContent from "./TabContent";
 
-export default function BasicTab({ tabList, datas }) {
+export default function BasicTab({ tabList, children }) {
   const [tab, setTab] = useRecoilState(TabState);
 
   const handleChange = (e, tab) => {
@@ -32,11 +32,11 @@ export default function BasicTab({ tabList, datas }) {
           aria-label="scrollable force tabs example"
         >
           {tabList.map((tab, idx) => (
-            <Tab label={tab} value={`${idx + 1}`} />
+            <Tab key={idx} label={tab} value={`${idx + 1}`} />
           ))}
         </Tabs>
       </Box>
-      <TabContent value={tab} datas={datas} />
+      <TabContent value={tab} children={children} />
     </TabContext>
   );
 }

@@ -3,6 +3,8 @@ import Modal from "@mui/material/Modal";
 import Button from "../button/Button";
 
 import { BsXLg } from "react-icons/bs";
+import { RiMore2Line } from "react-icons/ri";
+import UserMenu from "../user/UserMenu";
 
 const style = {
   position: "absolute",
@@ -26,21 +28,36 @@ const style = {
   overflowY: "scroll",
 };
 
-export default function BasicModal({ isModalOpen, setIsModalOpen, children }) {
+export default function BasicModal({
+  isModalOpen,
+  setIsModalOpen,
+  setAnchorEl,
+  children,
+}) {
   return (
     <div className={`${isModalOpen ? "block" : "hidden"}`}>
       <Modal
         open={isModalOpen}
-        // onClose={() => setIsModalOpen(false)}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <div className="flex justify-end w-full">
-            <Button icon={<BsXLg />} onClick={() => setIsModalOpen(false)} />
+          <div className="relative flex justify-between w-full">
+            <Button
+              icon={<RiMore2Line />}
+              onClick={(e) => {
+                setAnchorEl(e.currentTarget);
+              }}
+            />
+            <Button
+              icon={<BsXLg />}
+              onClick={() => {
+                setIsModalOpen(false);
+              }}
+            />
           </div>
 
-          <div>{children}</div>
+          <div className="mt-4">{children}</div>
         </Box>
       </Modal>
     </div>
