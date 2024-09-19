@@ -19,7 +19,7 @@ export default function SideBar({ isSidebarOpen, setIsSidebarOpen }) {
     <div
       className={`${
         isSidebarOpen ? "ml-0" : "ml-[-100%]"
-      } lg:w-[17%] md:w-[20%] sm:w-[25%] 3sm:w-full h-full sm:p-1 3sm:p-4 box-border bg-black text-white sm:relative 3sm:fixed top-0 left-0 sm:ml-0 transition-all duration-700`}
+      } lg:w-[17%] md:w-[20%] sm:w-[25%] 3sm:w-full h-full sm:p-1 3sm:p-4 box-border bg-black text-white sm:relative 3sm:fixed top-0 left-0 sm:ml-0 transition-all duration-700 z-10`}
     >
       <div className="w-full pb-2 border-b-[1px] border-solid border-[rgba(255,255,255,0.3)] flex items-center justify-between cursor-pointer xl:text-[1rem] md:text-[0.9rem] 2sm:text-[0.875rem] 3sm:text-[0.75rem]">
         <div
