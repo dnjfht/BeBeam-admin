@@ -1,22 +1,22 @@
-import { useEffect, useMemo, useState } from "react";
 import { useRecoilState } from "recoil";
 import {
   AnchorElState,
   SelectedIdState,
   SelectedNicknameState,
+  SignUpAndResignUsersState,
   UsersState,
 } from "../../recoil/user";
 import { IsModalOpenState } from "../../recoil/content";
 import Table from "../../components/table/Table";
 import UserMenu from "../../components/user/UserMenu";
+import UserModal from "../../components/user/UserModal";
 import { handleNicknameClick } from "../../common";
-import { signUpAndResignUserList } from "../../constants";
-import BasicModal from "../../components/modal/BasicModal";
-import UserDetails from "../../components/modal/contents/User/UserDetails";
 
 export default function SignUpAndResignUsers() {
   const [users, setUsers] = useRecoilState(UsersState);
-  const [signUpAndResignUsers, setSignUpAndResignUsers] = useState([]);
+  const [signUpAndResignUsers, setSignUpAndResignUsers] = useRecoilState(
+    SignUpAndResignUsersState
+  );
   const [anchorEl, setAnchorEl] = useRecoilState(AnchorElState);
   const [selectedNickname, setSelectedNickname] = useRecoilState(
     SelectedNicknameState
@@ -156,12 +156,6 @@ export default function SignUpAndResignUsers() {
     },
   ];
 
-  const data = useMemo(() => signUpAndResignUserList, []);
-
-  useEffect(() => {
-    setSignUpAndResignUsers(data);
-  }, [data]);
-
   return (
     <div>
       <h1 className="mb-6 text-[1.5rem] font-bold">가입/탈퇴 유저 리스트</h1>
@@ -182,17 +176,13 @@ export default function SignUpAndResignUsers() {
         />
       </Table>
 
-      <BasicModal
+      <UserModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         setAnchorEl={setAnchorEl}
-      >
-        <UserDetails
-          userId={selectedId}
-          datas={signUpAndResignUsers}
-          setIsModalOpen={setIsModalOpen}
-        />
-      </BasicModal>
+        selectedId={selectedId}
+        datas={signUpAndResignUsers}
+      />
     </div>
   );
 }

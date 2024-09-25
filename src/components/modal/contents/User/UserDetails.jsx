@@ -60,6 +60,7 @@ export default function UserDetails({ userId, datas, setIsModalOpen }) {
     "신청 중인 모임",
     "참여 중인 모임",
     "개설한 모임",
+    "작성한 후기 댓글",
   ];
   const meetingDatas =
     tab === "1"

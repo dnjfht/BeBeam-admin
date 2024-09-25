@@ -21,3 +21,9 @@ export const UsersState = atom({
   key: "UsersState",
   default: [],
 });
+
+//
+export const SignUpAndResignUsersState = atom({
+  key: "SignUpAndResignUsersState",
+  default: [],
+});

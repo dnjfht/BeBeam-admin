@@ -7,9 +7,8 @@ import {
 } from "../../recoil/user";
 import { IsModalOpenState } from "../../recoil/content";
 import Table from "../../components/table/Table";
-import BasicModal from "../../components/modal/BasicModal";
-import UserDetails from "../../components/modal/contents/User/UserDetails";
 import UserMenu from "../../components/user/UserMenu";
+import UserModal from "../../components/user/UserModal";
 import { handleNicknameClick } from "../../common";
 
 export default function Users() {
@@ -157,17 +156,13 @@ export default function Users() {
         />
       </Table>
 
-      <BasicModal
+      <UserModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         setAnchorEl={setAnchorEl}
-      >
-        <UserDetails
-          userId={selectedId}
-          datas={users}
-          setIsModalOpen={setIsModalOpen}
-        />
-      </BasicModal>
+        selectedId={selectedId}
+        datas={users}
+      />
     </div>
   );
 }
