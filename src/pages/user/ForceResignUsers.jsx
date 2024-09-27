@@ -5,17 +5,14 @@ import {
   AnchorElState,
   SelectedIdState,
   SelectedNicknameState,
-  SignUpAndResignUsersState,
   UsersState,
 } from "../../recoil/user";
-import UserMenu from "../../components/user/UserMenu";
-import { handleNicknameClick } from "../../common";
+import BasicMenu from "../../components/menu/BasicMenu";
+import UserModal from "../../components/user/UserModal";
+import { currentDateFormat, handleNicknameClick } from "../../common";
 
 export default function ForceResignUsers() {
   const [users, setUsers] = useRecoilState(UsersState);
-  const [signUpAndResignUsers, setSignUpAndResignUsers] = useRecoilState(
-    SignUpAndResignUsersState
-  );
   const [anchorEl, setAnchorEl] = useRecoilState(AnchorElState);
   const [selectedNickname, setSelectedNickname] = useRecoilState(
     SelectedNicknameState
@@ -44,6 +41,12 @@ export default function ForceResignUsers() {
       width: 140,
     },
     {
+      field: "재가입 가능 여부",
+      headerName: "재가입 가능 여부",
+      type: "string",
+      width: 90,
+    },
+    {
       field: "프로필 이미지",
       headerName: "프로필 이미지",
       width: 70,
@@ -57,7 +60,6 @@ export default function ForceResignUsers() {
             height: 40,
             objectFit: "cover",
             borderRadius: "100%",
-            // marginTop: 5,
           }}
         />
       ),
@@ -107,7 +109,7 @@ export default function ForceResignUsers() {
       field: "이메일",
       headerName: "이메일",
       type: "string",
-      width: 140,
+      width: 200,
     },
     {
       field: "주소",
@@ -149,29 +151,72 @@ export default function ForceResignUsers() {
     },
   ];
 
-  const filteredForceResignUSers = signUpAndResignUsers.filter(
+  const filteredForceResignUsers = users.filter(
     (user) => user.강제탈퇴 === true
   );
+
+  const menuDatas = [
+    {
+      text: "회원 상세 정보",
+      onClick: () => {
+        setIsModalOpen(true);
+        setAnchorEl(null);
+      },
+    },
+    {
+      text: `${
+        filteredForceResignUsers.find((user) => user.id === selectedId)?.[
+          "재가입 가능 여부"
+        ] === "가능"
+          ? "재가입 불가능 처리"
+          : "재가입 가능 처리"
+      }`,
+      onClick: () => {
+        // 재가입 가능 여부 처리 로직 추가
+
+        setUsers((user) =>
+          user.map((u) => {
+            if (u.id === selectedId) {
+              return {
+                ...u,
+                "재가입 가능 여부":
+                  u["재가입 가능 여부"] === "가능" ? "불가능" : "가능",
+              };
+            } else {
+              return u;
+            }
+          })
+        );
+      },
+    },
+    {
+      text: "취소",
+      onClick: () => {
+        setAnchorEl(null);
+      },
+    },
+  ];
+  const datas = isModalOpen ? menuDatas.slice(1) : menuDatas;
 
   return (
     <div>
       <h1 className="mb-6 text-[1.5rem] font-bold">강제 탈퇴 유저 리스트</h1>
 
-      <Table columns={columns} datas={filteredForceResignUSers}>
-        <UserMenu
-          setIsModalOpen={setIsModalOpen}
+      <Table columns={columns} datas={filteredForceResignUsers}>
+        <BasicMenu
           anchorEl={anchorEl}
           setAnchorEl={setAnchorEl}
-          setUsers={setUsers}
-          setSignUpAndResignUsers={setSignUpAndResignUsers}
-          selectedId={selectedId}
-          selectedNickname={selectedNickname}
-          isTableModal={true}
-          isResignUser={
-            users.find((user) => user.id === selectedId) === undefined
-          }
+          menuDatas={datas}
         />
       </Table>
+
+      <UserModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        setAnchorEl={setAnchorEl}
+        selectedId={selectedId}
+        datas={users}
+      />
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
-import { SignUpAndResignUsersState, UsersState } from "../recoil/user";
-import { signUpAndResignUserList, userList } from "../constants";
+import { UsersState } from "../recoil/user";
+import { userList } from "../constants";
 import SideBar from "../components/SideBar/SideBar";
 import Header from "../components/header/Header";
 
@@ -12,10 +12,7 @@ export default function Root({ isLogin, isAfterLogin, setIsAfterLogin }) {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const setUsers = useSetRecoilState(UsersState);
-  const setSignUpAndResignUsers = useSetRecoilState(SignUpAndResignUsersState);
-
   const userData = useMemo(() => userList, []);
-  const signUpAndResignUserData = useMemo(() => signUpAndResignUserList, []);
 
   useEffect(() => {
     if (isLogin) {
@@ -32,8 +29,7 @@ export default function Root({ isLogin, isAfterLogin, setIsAfterLogin }) {
 
   useEffect(() => {
     setUsers(userData);
-    setSignUpAndResignUsers(signUpAndResignUserData);
-  }, [userData, signUpAndResignUserData]);
+  }, [userData]);
 
   return (
     <>

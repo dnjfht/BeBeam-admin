@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useRecoilState } from "recoil";
 import {
   AnchorElState,
@@ -19,6 +20,8 @@ export default function Users() {
   );
   const [selectedId, setSelectedId] = useRecoilState(SelectedIdState);
   const [isModalOpen, setIsModalOpen] = useRecoilState(IsModalOpenState);
+  const [isForcedResign, setIsForcedResign] = useState(false);
+  console.log("isForcedResign", isForcedResign);
 
   const columns = [
     {
@@ -42,7 +45,6 @@ export default function Users() {
             height: 40,
             objectFit: "cover",
             borderRadius: "100%",
-            marginTop: 5,
           }}
         />
       ),
@@ -92,7 +94,7 @@ export default function Users() {
       field: "이메일",
       headerName: "이메일",
       type: "string",
-      width: 140,
+      width: 200,
     },
     {
       field: "주소",
@@ -140,11 +142,15 @@ export default function Users() {
     },
   ];
 
+  const filterCurrentUsers = users.filter(
+    (user) => user["가입/탈퇴"] === "가입"
+  );
+
   return (
     <div>
       <h1 className="mb-6 text-[1.5rem] font-bold">유저 리스트</h1>
 
-      <Table columns={columns} datas={users}>
+      <Table columns={columns} datas={filterCurrentUsers}>
         <UserMenu
           setIsModalOpen={setIsModalOpen}
           anchorEl={anchorEl}
@@ -152,7 +158,9 @@ export default function Users() {
           setUsers={setUsers}
           selectedId={selectedId}
           selectedNickname={selectedNickname}
-          isTableModal={isModalOpen ? false : true}
+          isTableModal={isModalOpen}
+          isForcedResign={isForcedResign}
+          setIsForcedResign={setIsForcedResign}
         />
       </Table>
 

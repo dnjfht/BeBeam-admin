@@ -3,7 +3,6 @@ import {
   AnchorElState,
   SelectedIdState,
   SelectedNicknameState,
-  SignUpAndResignUsersState,
   UsersState,
 } from "../../recoil/user";
 import { IsModalOpenState } from "../../recoil/content";
@@ -14,9 +13,6 @@ import { handleNicknameClick } from "../../common";
 
 export default function SignUpAndResignUsers() {
   const [users, setUsers] = useRecoilState(UsersState);
-  const [signUpAndResignUsers, setSignUpAndResignUsers] = useRecoilState(
-    SignUpAndResignUsersState
-  );
   const [anchorEl, setAnchorEl] = useRecoilState(AnchorElState);
   const [selectedNickname, setSelectedNickname] = useRecoilState(
     SelectedNicknameState
@@ -64,7 +60,6 @@ export default function SignUpAndResignUsers() {
             height: 40,
             objectFit: "cover",
             borderRadius: "100%",
-            marginTop: 5,
           }}
         />
       ),
@@ -114,7 +109,7 @@ export default function SignUpAndResignUsers() {
       field: "이메일",
       headerName: "이메일",
       type: "string",
-      width: 140,
+      width: 200,
     },
     {
       field: "주소",
@@ -160,18 +155,18 @@ export default function SignUpAndResignUsers() {
     <div>
       <h1 className="mb-6 text-[1.5rem] font-bold">가입/탈퇴 유저 리스트</h1>
 
-      <Table columns={columns} datas={signUpAndResignUsers}>
+      <Table columns={columns} datas={users}>
         <UserMenu
           setIsModalOpen={setIsModalOpen}
           anchorEl={anchorEl}
           setAnchorEl={setAnchorEl}
           setUsers={setUsers}
-          setSignUpAndResignUsers={setSignUpAndResignUsers}
           selectedId={selectedId}
           selectedNickname={selectedNickname}
-          isTableModal={true}
+          isTableModal={isModalOpen}
           isResignUser={
-            users.find((user) => user.id === selectedId) === undefined
+            users.find((user) => user.id === selectedId)?.["가입/탈퇴"] ===
+            "탈퇴"
           }
         />
       </Table>
@@ -181,7 +176,7 @@ export default function SignUpAndResignUsers() {
         setIsModalOpen={setIsModalOpen}
         setAnchorEl={setAnchorEl}
         selectedId={selectedId}
-        datas={signUpAndResignUsers}
+        datas={users}
       />
     </div>
   );
