@@ -6,13 +6,13 @@ import { TabState } from "../../../../recoil/content";
 import Button from "../../../button/Button";
 import BasicTab from "../../../tab/BasicTab";
 import MeetingCard from "../../../tab/MeetingCard";
+import CommunityReviewsCard from "../../../card/communityReviews/CommunityReviewsCard";
 
 import { FaCaretDown, FaCaretUp } from "react-icons/fa6";
 import { PiCakeFill, PiGenderIntersexLight, PiMedalFill } from "react-icons/pi";
 import { MdLocationPin, MdOutlineOnlinePrediction } from "react-icons/md";
 import { BsCalendar2DateFill, BsClipboardCheckFill } from "react-icons/bs";
 import { TbMessageReportFilled } from "react-icons/tb";
-import CommunityReviewsCard from "../../../card/communityReviews/CommunityReviewsCard";
 
 export default function UserDetails({ userId, datas, setIsModalOpen }) {
   const [isDropDown, setIsDropDown] = useState(false);
