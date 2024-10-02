@@ -1,7 +1,7 @@
 // 유저에서 사용하는 공통된 모달
 
-import BasicModal from "../modal/BasicModal";
-import UserDetails from "../modal/contents/User/UserDetails";
+import BasicModal from "../BasicModal";
+import UserDetails from "../contents/User/UserDetails";
 
 export default function UserModal({
   isModalOpen,

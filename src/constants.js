@@ -9,7 +9,7 @@ export const textInputStyle = {
 
 export const btnBasicStyle = {
   basic: "",
-  border: "border-[1px] border-solid transition-all duration-700",
+  border: "border-solid transition-all duration-700",
   "login-delete": "absolute transition-all duration-700",
   "black-bg":
     "bg-[#121212] text-white hover:bg-transparent hover:text-[#121212] transition-all duration-700 border-[1px] border-solid border-[#121212]",
@@ -66,7 +66,7 @@ export const userList = [
     id: "F8B21807-7C44-4FA9-AF3B-1D464C22A764",
     "가입/탈퇴": "탈퇴",
     강제탈퇴: true,
-    "강제탈퇴 사유": "비방 댓글",
+    "강제탈퇴 사유": "부적절한 후기 댓글 작성",
     "재가입 가능 여부": "가능",
     "회원가입 일자": "2024.05.01",
     "회원탈퇴 일자": "2024.09.16",
@@ -173,7 +173,7 @@ export const userList = [
     id: "36D1C75A-2864-4786-8FF2-4870BC62BCFD",
     "가입/탈퇴": "탈퇴",
     강제탈퇴: true,
-    "강제탈퇴 사유": "좋지 못한 의도의 모임 생성",
+    "강제탈퇴 사유": "부적절한 의도의 모임 생성",
     "재가입 가능 여부": "불가능",
     "회원가입 일자": "2024.01.19",
     "회원탈퇴 일자": "2024.08.15",

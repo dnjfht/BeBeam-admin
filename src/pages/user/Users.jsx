@@ -8,8 +8,8 @@ import {
 } from "../../recoil/user";
 import { IsModalOpenState } from "../../recoil/content";
 import Table from "../../components/table/Table";
-import UserMenu from "../../components/user/UserMenu";
-import UserModal from "../../components/user/UserModal";
+import UserMenu from "../../components/menu/user/UserMenu";
+import UserModal from "../../components/modal/user/UserModal";
 import { handleNicknameClick } from "../../common";
 
 export default function Users() {
@@ -20,8 +20,6 @@ export default function Users() {
   );
   const [selectedId, setSelectedId] = useRecoilState(SelectedIdState);
   const [isModalOpen, setIsModalOpen] = useRecoilState(IsModalOpenState);
-  const [isForcedResign, setIsForcedResign] = useState(false);
-  console.log("isForcedResign", isForcedResign);
 
   const columns = [
     {
@@ -159,8 +157,6 @@ export default function Users() {
           selectedId={selectedId}
           selectedNickname={selectedNickname}
           isTableModal={isModalOpen}
-          isForcedResign={isForcedResign}
-          setIsForcedResign={setIsForcedResign}
         />
       </Table>
 

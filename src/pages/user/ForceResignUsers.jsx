@@ -8,7 +8,7 @@ import {
   UsersState,
 } from "../../recoil/user";
 import BasicMenu from "../../components/menu/BasicMenu";
-import UserModal from "../../components/user/UserModal";
+import UserModal from "../../components/modal/user/UserModal";
 import { currentDateFormat, handleNicknameClick } from "../../common";
 
 export default function ForceResignUsers() {
