@@ -164,8 +164,7 @@ export default function Users() {
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         setAnchorEl={setAnchorEl}
-        selectedId={selectedId}
-        datas={users}
+        data={users.find((user) => user.id === selectedId)}
       />
     </div>
   );

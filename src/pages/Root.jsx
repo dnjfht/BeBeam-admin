@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { UsersState } from "../recoil/user";
-import { userList } from "../constants";
+import {CommunityReviewsDataState} from "../recoil/review";
+import { userList, reviewCommentList } from "../constants";
 import SideBar from "../components/SideBar/SideBar";
 import Header from "../components/header/Header";
 
@@ -12,7 +13,9 @@ export default function Root({ isLogin, isAfterLogin, setIsAfterLogin }) {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const setUsers = useSetRecoilState(UsersState);
+  const setCommunityReviews = useSetRecoilState(CommunityReviewsDataState);
   const userData = useMemo(() => userList, []);
+  const commentData = useMemo(() => reviewCommentList, []);
 
   useEffect(() => {
     if (isLogin) {
@@ -29,7 +32,8 @@ export default function Root({ isLogin, isAfterLogin, setIsAfterLogin }) {
 
   useEffect(() => {
     setUsers(userData);
-  }, [userData]);
+    setCommunityReviews(commentData);
+  }, [userData, commentData]);
 
   return (
     <>

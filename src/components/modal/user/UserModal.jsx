@@ -7,8 +7,7 @@ export default function UserModal({
   isModalOpen,
   setIsModalOpen,
   setAnchorEl,
-  selectedId,
-  datas,
+  data,
 }) {
   return (
     <BasicModal
@@ -17,8 +16,7 @@ export default function UserModal({
       setAnchorEl={setAnchorEl}
     >
       <UserDetails
-        userId={selectedId}
-        datas={datas}
+        data={data}
         setIsModalOpen={setIsModalOpen}
       />
     </BasicModal>
