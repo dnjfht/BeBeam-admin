@@ -92,7 +92,7 @@ const Login = ({ isLogin, setIsLogin, setIsAfterLogin }) => {
                 !id || !pw
                   ? "border-[#969696c8] text-[#969696c8]"
                   : "border-white bg-[rgba(255,255,255,0)] hover:bg-white hover:text-black hover:font-bold"
-              } w-full 2sm:py-4 py-3 mt-4 rounded-lg`}
+              } w-full 2sm:py-4 py-3 mt-4 border-[1px] rounded-lg`}
               disabled={!id || !pw}
             >
               로그인

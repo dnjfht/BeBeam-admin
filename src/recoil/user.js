@@ -22,3 +22,7 @@ export const UsersState = atom({
   default: [],
 });
 
+export const IsForcedResignState = atom({
+  key: "IsForcedResignState",
+  default: false,
+});
