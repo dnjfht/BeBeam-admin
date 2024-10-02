@@ -1,6 +1,6 @@
 // 재활용할 테이블(표)(테이블을 만들 거면 이걸 가져다 사용!)
 
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid} from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 
 const paginationModel = {
@@ -8,9 +8,9 @@ const paginationModel = {
   pageSize: 10,
 };
 
-export default function Table({ columns, datas, children }) {
+export default function Table({ columns, datas, children, ischeckbox, selectedIdList, setSelectedIdList}) {
   return (
-    <Paper sx={{ height: "78vh", width: "100%" }}>
+    <Paper sx={{ height: "78vh", width: "100%" , position :"relative" }}>
       <DataGrid
         rows={datas}
         columns={columns}
@@ -24,6 +24,12 @@ export default function Table({ columns, datas, children }) {
             alignItems: "center",
             paddingY: 1,
           },
+        }}
+        checkboxSelection = {ischeckbox}
+        disableRowSelectionOnClick
+        rowSelectionModel={selectedIdList}
+        onRowSelectionModelChange={(newRowSelectionModel) => {
+          setSelectedIdList(newRowSelectionModel);
         }}
       />
       {children}

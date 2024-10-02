@@ -14,12 +14,11 @@ import { MdLocationPin, MdOutlineOnlinePrediction } from "react-icons/md";
 import { BsCalendar2DateFill, BsClipboardCheckFill } from "react-icons/bs";
 import { TbMessageReportFilled } from "react-icons/tb";
 
-export default function UserDetails({ userId, datas, setIsModalOpen }) {
+export default function UserDetails({ data, setIsModalOpen }) {
   const [isDropDown, setIsDropDown] = useState(false);
   const tab = useRecoilValue(TabState);
 
   // api가 없으니 일단 이런 느낌으로.
-  const data = datas.find((data) => data.id === userId);
   const userDetailData = [
     { icon: <PiCakeFill />, type: "생일", text: data?.생일 ?? "" },
     { icon: <PiGenderIntersexLight />, type: "성별", text: data?.성별 ?? "" },
