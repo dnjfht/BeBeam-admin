@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useRecoilState } from "recoil";
 import {
   AnchorElState,
@@ -7,9 +8,8 @@ import {
 } from "../../recoil/user";
 import { IsModalOpenState } from "../../recoil/content";
 import Table from "../../components/table/Table";
-import BasicModal from "../../components/modal/BasicModal";
-import UserDetails from "../../components/modal/contents/User/UserDetails";
-import UserMenu from "../../components/user/UserMenu";
+import UserMenu from "../../components/menu/user/UserMenu";
+import UserModal from "../../components/modal/user/UserModal";
 import { handleNicknameClick } from "../../common";
 
 export default function Users() {
@@ -43,7 +43,6 @@ export default function Users() {
             height: 40,
             objectFit: "cover",
             borderRadius: "100%",
-            marginTop: 5,
           }}
         />
       ),
@@ -93,7 +92,7 @@ export default function Users() {
       field: "이메일",
       headerName: "이메일",
       type: "string",
-      width: 140,
+      width: 200,
     },
     {
       field: "주소",
@@ -141,11 +140,15 @@ export default function Users() {
     },
   ];
 
+  const filterCurrentUsers = users.filter(
+    (user) => user["가입/탈퇴"] === "가입"
+  );
+
   return (
     <div>
       <h1 className="mb-6 text-[1.5rem] font-bold">유저 리스트</h1>
 
-      <Table columns={columns} datas={users}>
+      <Table columns={columns} datas={filterCurrentUsers}>
         <UserMenu
           setIsModalOpen={setIsModalOpen}
           anchorEl={anchorEl}
@@ -153,21 +156,17 @@ export default function Users() {
           setUsers={setUsers}
           selectedId={selectedId}
           selectedNickname={selectedNickname}
-          isTableModal={isModalOpen ? false : true}
+          isTableModal={isModalOpen}
         />
       </Table>
 
-      <BasicModal
+      <UserModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         setAnchorEl={setAnchorEl}
-      >
-        <UserDetails
-          userId={selectedId}
-          datas={users}
-          setIsModalOpen={setIsModalOpen}
-        />
-      </BasicModal>
+        selectedId={selectedId}
+        datas={users}
+      />
     </div>
   );
 }

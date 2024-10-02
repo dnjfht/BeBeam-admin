@@ -1,10 +1,11 @@
+// 재활용할 모달(모달을 만들 거면 이걸 가져다 사용!)
+
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Button from "../button/Button";
 
 import { BsXLg } from "react-icons/bs";
 import { RiMore2Line } from "react-icons/ri";
-import UserMenu from "../user/UserMenu";
 
 const style = {
   position: "absolute",

@@ -14,11 +14,16 @@ export default function Table({ columns, datas, children }) {
       <DataGrid
         rows={datas}
         columns={columns}
+        getRowHeight={() => "auto"}
         initialState={{ pagination: { paginationModel } }}
         pageSizeOptions={[5, 10]}
-        // checkboxSelection
         sx={{
           border: 0,
+          "&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell": {
+            display: "flex",
+            alignItems: "center",
+            paddingY: 1,
+          },
         }}
       />
       {children}
