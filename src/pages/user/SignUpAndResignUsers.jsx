@@ -1,4 +1,3 @@
-import { useEffect, useMemo, useState } from "react";
 import { useRecoilState } from "recoil";
 import {
   AnchorElState,
@@ -8,15 +7,12 @@ import {
 } from "../../recoil/user";
 import { IsModalOpenState } from "../../recoil/content";
 import Table from "../../components/table/Table";
-import UserMenu from "../../components/user/UserMenu";
+import UserMenu from "../../components/menu/user/UserMenu";
+import UserModal from "../../components/modal/user/UserModal";
 import { handleNicknameClick } from "../../common";
-import { signUpAndResignUserList } from "../../constants";
-import BasicModal from "../../components/modal/BasicModal";
-import UserDetails from "../../components/modal/contents/User/UserDetails";
 
 export default function SignUpAndResignUsers() {
   const [users, setUsers] = useRecoilState(UsersState);
-  const [signUpAndResignUsers, setSignUpAndResignUsers] = useState([]);
   const [anchorEl, setAnchorEl] = useRecoilState(AnchorElState);
   const [selectedNickname, setSelectedNickname] = useRecoilState(
     SelectedNicknameState
@@ -64,7 +60,6 @@ export default function SignUpAndResignUsers() {
             height: 40,
             objectFit: "cover",
             borderRadius: "100%",
-            marginTop: 5,
           }}
         />
       ),
@@ -114,7 +109,7 @@ export default function SignUpAndResignUsers() {
       field: "이메일",
       headerName: "이메일",
       type: "string",
-      width: 140,
+      width: 200,
     },
     {
       field: "주소",
@@ -156,43 +151,32 @@ export default function SignUpAndResignUsers() {
     },
   ];
 
-  const data = useMemo(() => signUpAndResignUserList, []);
-
-  useEffect(() => {
-    setSignUpAndResignUsers(data);
-  }, [data]);
-
   return (
     <div>
       <h1 className="mb-6 text-[1.5rem] font-bold">가입/탈퇴 유저 리스트</h1>
 
-      <Table columns={columns} datas={signUpAndResignUsers}>
+      <Table columns={columns} datas={users}>
         <UserMenu
           setIsModalOpen={setIsModalOpen}
           anchorEl={anchorEl}
           setAnchorEl={setAnchorEl}
           setUsers={setUsers}
-          setSignUpAndResignUsers={setSignUpAndResignUsers}
           selectedId={selectedId}
           selectedNickname={selectedNickname}
-          isTableModal={true}
+          isTableModal={isModalOpen}
           isResignUser={
-            users.find((user) => user.id === selectedId) === undefined
+            users.find((user) => user.id === selectedId)?.["가입/탈퇴"] ===
+            "탈퇴"
           }
         />
       </Table>
 
-      <BasicModal
+      <UserModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         setAnchorEl={setAnchorEl}
-      >
-        <UserDetails
-          userId={selectedId}
-          datas={signUpAndResignUsers}
-          setIsModalOpen={setIsModalOpen}
-        />
-      </BasicModal>
+        data={users.find((user) => user.id === selectedId)}
+      />
     </div>
   );
 }

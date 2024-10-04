@@ -1,19 +1,24 @@
 // 유저에서 사용하는 공통된 메뉴
 
-import { currentDateFormat } from "../../common";
-import BasicMenu from "../menu/BasicMenu";
+import { useRecoilState } from "recoil";
+import { IsForcedResignState } from "../../../recoil/user";
+import BasicMenu from "../BasicMenu";
+import { currentDateFormat } from "../../../common";
+import UserForcedResignReasonModal from "../../modal/user/UserForcedResignReasonModal";
 
 export default function UserMenu({
   setIsModalOpen,
   anchorEl,
   setAnchorEl,
   setUsers,
-  setSignUpAndResignUsers,
   selectedId,
   selectedNickname,
   isTableModal,
   isResignUser,
 }) {
+  const [isForcedResign, setIsForcedResign] =
+    useRecoilState(IsForcedResignState);
+
   const menuDatas = [
     {
       text: "회원 상세 정보",
@@ -32,14 +37,15 @@ export default function UserMenu({
           if (isResignUser) {
             alert("이미 탈퇴된 회원입니다...!");
           } else {
-            setUsers((prev) => prev.filter((user) => user.id !== selectedId));
-            setSignUpAndResignUsers((prev) =>
+            setUsers((prev) =>
               prev.map((user) => {
                 if (user.id === selectedId) {
                   return {
                     ...user,
                     "가입/탈퇴": "탈퇴",
                     "회원탈퇴 일자": currentDateFormat(new Date()),
+                    강제탈퇴: true,
+                    "재가입 가능 여부": "가능",
                   };
                 } else {
                   return user;
@@ -48,6 +54,7 @@ export default function UserMenu({
             );
 
             alert(`${selectedNickname} 회원이 강제 탈퇴되었습니다.`);
+            setIsForcedResign(true);
           }
         }
 
@@ -61,13 +68,23 @@ export default function UserMenu({
       },
     },
   ];
-  const datas = isTableModal ? menuDatas : menuDatas.slice(1);
+  const datas = isTableModal ? menuDatas.slice(1) : menuDatas;
 
   return (
-    <BasicMenu
-      anchorEl={anchorEl}
-      setAnchorEl={setAnchorEl}
-      menuDatas={datas}
-    />
+    <>
+      <BasicMenu
+        anchorEl={anchorEl}
+        setAnchorEl={setAnchorEl}
+        menuDatas={datas}
+      />
+
+      <UserForcedResignReasonModal
+        setIsForcedResign={setIsForcedResign}
+        isForcedResign={isForcedResign}
+        selectedNickname={selectedNickname}
+        selectedId={selectedId}
+        setUsers={setUsers}
+      />
+    </>
   );
 }

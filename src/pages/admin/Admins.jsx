@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const data = [
   { id: 1, name: '홍길동', email: 'hong@bebeam.com', phone: '010-1234-5678', joinDate: '2024-10-12' },
@@ -67,16 +67,3 @@ export default function Admins() {
     </div>
   );
 }
-
-
-/*
-import UserTableComponent from '../../components/table/UserTable'; 
-import React, { useState } from 'react';
-
-export default function Admins() {
-  return <div>관리자 리스트</div>;
-  <UserTableComponent />
-}
-
-
-*/
