@@ -22,13 +22,13 @@ export default function SideBarMenu({
 
   const sideBarMenu = [
     [[{ text: "홈", icon: <AiFillHome /> }], [{ text: "홈", url: "/home" }]],
-    [
-      [{ text: "관리자", icon: <MdAdminPanelSettings /> }],
-      [
-        { text: "관리자 리스트", url: "/admins" },
-        { text: "가입/탈퇴 관리자 리스트", url: "/signUpAndResignAdmins" },
-      ],
-    ],
+    // [
+    //   [{ text: "관리자", icon: <MdAdminPanelSettings /> }],
+    //   [
+    //     { text: "관리자 리스트", url: "/admins" },
+    //     { text: "가입/탈퇴 관리자 리스트", url: "/signUpAndResignAdmins" },
+    //   ],
+    // ],
     [
       [{ text: "유저", icon: <FaUser /> }],
       [

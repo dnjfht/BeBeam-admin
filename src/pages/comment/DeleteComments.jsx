@@ -1,26 +1,26 @@
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import TextField from '@mui/material/TextField';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from "recoil";
 import { IsModalOpenState } from "../../recoil/content";
 import {
   AnchorElState,
   SelectedIdState,
   SelectedNicknameState,
-  UsersState
-} from '../../recoil/user';
-import {CommunityReviewsDataState} from "../../recoil/review";
+  UsersState,
+} from "../../recoil/user";
+import { CommunityReviewsDataState } from "../../recoil/review";
 
 import UserModal from "../../components/modal/user/UserModal";
 import { handleNicknameClick } from "../../common";
 import UserMenu from "../../components/menu/user/UserMenu";
-import Table from '../../components/table/Table';
+import Table from "../../components/table/Table";
 
 export default function DeleteCommunityReviewsComment() {
   const [selectedId, setSelectedId] = useRecoilState(SelectedIdState);
-  const [selectedNickname, setSelectedNickname] = useRecoilState(SelectedNicknameState);
+  const [selectedNickname, setSelectedNickname] = useRecoilState(
+    SelectedNicknameState
+  );
   const [isModalOpen, setIsModalOpen] = useRecoilState(IsModalOpenState);
   const [users, setUsers] = useRecoilState(UsersState);
-  const [communityReviews, setCommunityReviews] = useRecoilState(CommunityReviewsDataState);
+  const communityReviews = useRecoilValue(CommunityReviewsDataState);
   const [anchorEl, setAnchorEl] = useRecoilState(AnchorElState);
 
   const columns = [
@@ -51,8 +51,8 @@ export default function DeleteCommunityReviewsComment() {
     },
 
     {
-      field: '닉네임',
-      headerName: '닉네임',
+      field: "닉네임",
+      headerName: "닉네임",
       width: 150,
       renderCell: (params) => (
         <span
@@ -63,7 +63,7 @@ export default function DeleteCommunityReviewsComment() {
               setAnchorEl,
               setSelectedNickname,
               setSelectedId,
-              false,
+              false
             )
           }
           style={{ cursor: "pointer" }}
@@ -73,52 +73,40 @@ export default function DeleteCommunityReviewsComment() {
       ),
     },
     {
-      field: '이름',
-      headerName: '이름',
+      field: "이름",
+      headerName: "이름",
       width: 150,
       editable: false,
     },
     {
-      field: '작성 일자',
-      headerName: '작성 일자',
+      field: "작성 일자",
+      headerName: "작성 일자",
       width: 180,
       editable: false,
-      renderEditCell: (params) => (
-        <DatePicker
-          value={params.value}
-          onChange={(newValue) => params.api.setEditCellValue({ id: params.id, field: params.field, value: newValue })}
-          renderInput={(props) => <TextField {...props} />}
-        />
-      ),
     },
     {
-      field: '삭제된 일자',
-      headerName: '삭제된 일자',
+      field: "삭제된 일자",
+      headerName: "삭제된 일자",
       width: 180,
       editable: false,
-      renderEditCell: (params) => (
-        <DatePicker
-          value={params.value}
-          onChange={(newValue) => params.api.setEditCellValue({ id: params.id, field: params.field, value: newValue })}
-          renderInput={(props) => <TextField {...props} />}
-        />
-      ),
     },
     {
-      field: '댓글단 모임',
-      headerName: '댓글단 모임',
+      field: "댓글단 모임",
+      headerName: "댓글단 모임",
       width: 200,
       editable: true,
     },
     {
-      field: '후기 댓글',
-      headerName: '후기 댓글',
+      field: "후기 댓글",
+      headerName: "후기 댓글",
       width: 500,
       editable: false,
     },
   ];
 
-  const filteredDatas = communityReviews.filter((data) => data["삭제된 댓글"] === true);
+  const filteredDatas = communityReviews.filter(
+    (data) => data["삭제된 댓글"] === true
+  );
 
   return (
     <div>
@@ -133,14 +121,14 @@ export default function DeleteCommunityReviewsComment() {
           selectedId={selectedId}
           selectedNickname={selectedNickname}
         />
-        </Table>
+      </Table>
 
-        <UserModal
+      <UserModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         setAnchorEl={setAnchorEl}
         data={users.find((user) => user.id === selectedId)}
       />
-      </div>
+    </div>
   );
 }
