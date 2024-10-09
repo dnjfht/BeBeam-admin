@@ -19,54 +19,51 @@ const style = {
   width: 700,
   bgcolor: 'background.paper',
   boxShadow: 24,
+  p: 4,
 };
 
 const selectionOptions = ['선발형', '선착순'];
 
-export default function CreateMeetingModal({ open, handleClose }) {
+export default function CreateMeetingModal({ open, handleClose, onCreateMeeting }) {
   const [formData, setFormData] = useState({
     modelName: '',
     selectionType: '',
     maxCount: '',
     modelDescription: '',
     modelAddress: '',
+    detailedAddress: '',
     modelPhotos: [],
     schedules: [],
+    hostNickname: '',
+    hostDescription: '',
   });
   const [isPostcodeVisible, setIsPostcodeVisible] = useState(false);
 
-  // 입력값 변경 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // 주소 검색 완료 
   const handleAddressComplete = (data) => {
     setFormData({ ...formData, modelAddress: data.address });
     setIsPostcodeVisible(false);
   };
 
-  // 사진 등록 
   const handlePhotoChange = (event) => {
     const files = Array.from(event.target.files);
-
     if (formData.modelPhotos.length + files.length > 5) {
       alert('최대 5개의 사진만 업로드할 수 있습니다.');
       return;
     }
-
     const newPhotos = files.map((file) => ({
       file,
       preview: URL.createObjectURL(file),
     }));
-
     setFormData((prevData) => ({
       ...prevData,
       modelPhotos: [...prevData.modelPhotos, ...newPhotos],
     }));
   };
 
-  // 사진 삭제 
   const removePhoto = (index) => {
     setFormData((prevData) => {
       const newPhotos = [...prevData.modelPhotos];
@@ -76,7 +73,6 @@ export default function CreateMeetingModal({ open, handleClose }) {
     });
   };
 
-  // 모집 일정 추가 
   const addSchedule = () => {
     setFormData((prevData) => ({
       ...prevData,
@@ -84,17 +80,24 @@ export default function CreateMeetingModal({ open, handleClose }) {
     }));
   };
 
-  // 모집 일정 변경
   const handleScheduleChange = (index, field, value) => {
     const newSchedules = [...formData.schedules];
     newSchedules[index][field] = value;
     setFormData({ ...formData, schedules: newSchedules });
   };
 
-  // 모집 일정 삭제
   const removeSchedule = (index) => {
     const newSchedules = formData.schedules.filter((_, i) => i !== index);
     setFormData({ ...formData, schedules: newSchedules });
+  };
+
+  const handleCreateMeeting = () => {
+    const newMeeting = {
+      id: new Date().getTime(),
+      ...formData,
+    };
+    onCreateMeeting(newMeeting);
+    handleClose();
   };
 
   return (
@@ -105,10 +108,10 @@ export default function CreateMeetingModal({ open, handleClose }) {
       }}>
         <Box sx={{
           ...style,
-          maxHeight: '80vh', 
-          overflowY: 'auto',  
+          maxHeight: '80vh',
+          overflowY: 'auto',
         }}>
-          <Typography variant="h6" component="h2">
+          <Typography variant="h6" component="h2" sx={{ mb: 3 }}>
             정기모임 개설하기
           </Typography>
 
@@ -120,10 +123,9 @@ export default function CreateMeetingModal({ open, handleClose }) {
             sx={{ mb: 2 }}
           />
 
-          <Typography variant="body1" sx={{ mb: 2 }}>
-            모집형태: {formData.selectionType || '선택하세요'} 
+          <Typography variant="body1" sx={{ mb: 1 }}>
+            모집형태: {formData.selectionType || '선택하세요'}
           </Typography>
-
           <Box sx={{ display: 'flex', mb: 2 }}>
             {selectionOptions.map((option) => (
               <Button
@@ -150,6 +152,8 @@ export default function CreateMeetingModal({ open, handleClose }) {
             label="모임 소개"
             name="modelDescription"
             onChange={handleChange}
+            multiline
+            rows={4}
             sx={{ mb: 2 }}
           />
           <TextField
@@ -158,42 +162,50 @@ export default function CreateMeetingModal({ open, handleClose }) {
             name="modelAddress"
             value={formData.modelAddress}
             onChange={handleChange}
+            placeholder="모임 장소를 선택해주세요."
             sx={{ mb: 2 }}
             readOnly
           />
           <Button variant="contained" onClick={() => setIsPostcodeVisible(!isPostcodeVisible)} sx={{ mb: 2 }}>
             주소 검색
           </Button>
+          <TextField
+            fullWidth
+            label="상세 주소를 입력해주세요."
+            name="detailedAddress"
+            value={formData.detailedAddress}
+            onChange={handleChange}
+            placeholder="상세 주소를 입력해주세요."
+            sx={{ mb: 2 }}
+          />
 
-          <Typography variant="h6" sx={{ mt: 2 }}>
+          <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
             호스트
           </Typography>
           <TextField
             fullWidth
-            label="호스트 닉네임을 입력하세요."
+            label="호스트 닉네임"
+            name="hostNickname"
+            onChange={handleChange}
             sx={{ mb: 2 }}
           />
           <TextField
             fullWidth
-            label="호스트 소개를 입력하세요."
+            label="호스트 소개"
+            name="hostDescription"
+            onChange={handleChange}
+            multiline
+            rows={3}
             sx={{ mb: 2 }}
           />
 
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            모임 사진 등록 (최대 5개까지 등록 가능합니다.)
+          <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
+            모임 사진 등록 (최대 5개까지 가능합니다)
           </Typography>
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handlePhotoChange}
-            style={{ marginBottom: '16px' }}
-          />
-          {formData.modelPhotos.length >= 5 && (
-            <Typography color="error" variant="body2">
-              최대 5개까지 등록 가능합니다.
-            </Typography>
-          )}
+          <Button variant="contained" component="label" sx={{ mb: 2 }}>
+            사진 추가
+            <input type="file" accept="image/*" multiple hidden onChange={handlePhotoChange} />
+          </Button>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px', mb: 2 }}>
             {formData.modelPhotos.map((photo, index) => (
               <Box key={index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -209,14 +221,12 @@ export default function CreateMeetingModal({ open, handleClose }) {
             ))}
           </Box>
 
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            모집 일정 등록
+          <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
+            모임 일정 등록
           </Typography>
           {formData.schedules.map((schedule, index) => (
             <Box key={index} sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <Typography variant="body1" sx={{ mr: 2 }}>
-                {index + 1}회차
-              </Typography>
+              <Typography variant="body1" sx={{ mr: 2 }}>{index + 1}회차</Typography>
               <LocalizationProvider dateAdapter={AdapterDateFns} locale={ko}>
                 <DatePicker
                   label="날짜 선택"
@@ -226,7 +236,7 @@ export default function CreateMeetingModal({ open, handleClose }) {
                 />
               </LocalizationProvider>
               <TextField
-                label="모임 이름"
+                label="모임 내용"
                 value={schedule.name}
                 onChange={(e) => handleScheduleChange(index, 'name', e.target.value)}
                 sx={{ mr: 2 }}
@@ -240,7 +250,7 @@ export default function CreateMeetingModal({ open, handleClose }) {
             일정 추가
           </Button>
 
-          <Button variant="contained" onClick={handleClose} sx={{ mt: 3 }}>
+          <Button variant="contained" onClick={handleCreateMeeting} sx={{ mt: 3, width: '100%' }}>
             모임 개설하기
           </Button>
         </Box>
