@@ -1,0 +1,106 @@
+
+.dropdown-menu {
+    position: absolute; 
+    background-color: white; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); 
+    z-index: 1001; 
+    display: flex;
+    flex-direction: column; 
+}
+
+.dropdown-menu button {
+    padding: 10px;
+    border: none;
+    background: none; 
+    text-align: left; 
+    cursor: pointer; 
+}
+
+.dropdown-menu button:hover {
+    background-color: #f0f0f0; 
+}
+
+
+.modal-header {
+    display: flex;
+    align-items: center; 
+    justify-content: space-between; 
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #E5EDF2;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+h2, h3, h4 {
+    margin: 10px 0;
+}
+
+.meeting-info {
+    margin: 15px 0;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between; /* 정보를 양쪽으로 배치 */
+    margin: 5px 0; /* 정보 항목 간격 조정 */
+}
+
+.activity {
+    display: flex;
+    justify-content: space-between; 
+    margin: 5px 0; 
+}
+
+.images {
+    margin: 15px 0;
+}
+
+.image-gallery {
+    display: flex;
+    gap: 10px; 
+}
+
+.image-placeholder {
+    width: 80px; 
+    height: 80px; 
+    background-color: #e0e0e0; 
+    border-radius: 4px; 
+
+}
+
+.delete-button {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #dc3545; 
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    background-color: #c82333; 
+}
+
