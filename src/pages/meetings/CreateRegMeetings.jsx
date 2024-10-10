@@ -29,7 +29,7 @@ export default function CreateRegMeetings() {
     
     setMeetingData((prevData) => [...prevData, transformedMeeting]);
   };
-    
+
 
   // 테이블 컬럼 정의
   const columns = [
@@ -53,7 +53,7 @@ export default function CreateRegMeetings() {
       
       <Table 
         columns={columns} 
-        datas={meetingData} // 테이블 데이터로 meetingData 사용
+        datas={meetingData} 
       />
     </div>
   );

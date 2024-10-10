@@ -5,11 +5,13 @@ import {
   TextField,
   Typography,
   Modal,
+  IconButton,
 } from '@mui/material';
 import Postcode from 'react-daum-postcode';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import ko from 'date-fns/locale/ko';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
 
 const style = {
   position: 'absolute',
@@ -39,7 +41,9 @@ export default function CreateMeetingModal({ open, handleClose, onCreateMeeting 
     schedules: [],
     hostNickname: '',
     hostDescription: '',
+    hostPhoto: null,
   });
+
   const [isPostcodeVisible, setIsPostcodeVisible] = useState(false);
   const [selectedTags, setSelectedTags] = useState([]);
 
@@ -112,28 +116,74 @@ const handleTagSelect = (tag) => {
     handleClose();
   };
 
+  const handleHostPhotoChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setFormData({
+        ...formData,
+        hostPhoto: {
+          file,
+          preview: URL.createObjectURL(file),
+        },
+        modelPhotos: [], 
+      });
+    }
+  };
+  
+
+  const handleMainPhotoChagne = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setFormData({
+        ...formData,
+        modelPhotos: [{ file, preview: URL.createObjectURL(file) }], 
+      });
+    }
+  };
+
+
+
   return (
     <>
       <Modal open={open} onClose={() => {
         setIsPostcodeVisible(false);
         handleClose();
       }}>
-        <Box sx={{
-          ...style,
-          maxHeight: '80vh',
-          overflowY: 'auto',
-        }}>
-          <Typography variant="h6" component="h2" sx={{ mb: 3 }}>
-            정기모임 개설하기
-          </Typography>
 
-          <TextField
-            fullWidth
-            label="모임명"
-            name="modelName"
-            onChange={handleChange}
-            sx={{ mb: 2 }}
-          />
+
+  <Box sx={{ ...style, maxHeight: '80vh', overflowY: 'auto' }}>
+  <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+    <input
+        accept="image/*"
+        id="modal-photo-input"
+        type="file"
+        style={{ display: 'none' }}
+        onChange={handleMainPhotoChagne}
+    />
+    <label htmlFor="modal-photo-input">
+        <IconButton color="primary" component="span">
+            {formData.modelPhotos.length > 0 ? (
+                <img
+                    src={formData.modelPhotos[0].preview}
+                    alt="대표 사진"
+                    style={{ width: '80px', height: '80px', objectFit: 'cover' }}
+                />
+            ) : (
+                <PhotoCamera />
+            )}
+        </IconButton>
+    </label>
+    <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold', ml: 2 }}>
+        정기모임 개설하기
+    </Typography>
+</Box>
+
+  <Typography variant="body2" sx={{ mb: 3, color: 'text.secondary' }}>
+    정기모임 생성에 필요한 정보들을 입력해주세요.<br />
+    모임은 최소 3명을 채워야 개최가 가능합니다.<br />
+    모임 모집 기간은 모두 동일하게 2주입니다.
+  </Typography>
+
 
           <Typography variant="body1" sx={{ mb: 1 }}>
             모집형태: {formData.selectionType || '선택하세요'}
@@ -184,6 +234,7 @@ const handleTagSelect = (tag) => {
             ))}
           </Box>
 
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
           <TextField
             fullWidth
             label="모임 장소를 선택해주세요."
@@ -191,12 +242,17 @@ const handleTagSelect = (tag) => {
             value={formData.modelAddress}
             onChange={handleChange}
             placeholder="모임 장소를 선택해주세요."
-            sx={{ mb: 2 }}
+            sx={{ flex: 1, mr: 1 }} 
             readOnly
-          />
-          <Button variant="contained" onClick={() => setIsPostcodeVisible(!isPostcodeVisible)} sx={{ mb: 2 }}>
-            주소 검색
-          </Button>
+            />
+  <Button
+    variant="contained"
+    onClick={() => setIsPostcodeVisible(!isPostcodeVisible)}
+  >
+    주소 검색
+  </Button>
+  </Box>
+
           <TextField
             fullWidth
             label="상세 주소를 입력해주세요."
@@ -210,13 +266,58 @@ const handleTagSelect = (tag) => {
           <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
             호스트
           </Typography>
-          <TextField
-            fullWidth
-            label="호스트 닉네임"
-            name="hostNickname"
-            onChange={handleChange}
-            sx={{ mb: 2 }}
-          />
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+  <input
+    accept="image/*"
+    id="host-photo-input"
+    type="file"
+    style={{ display: 'none' }}
+    onChange={handleHostPhotoChange}
+  />
+  <label htmlFor="host-photo-input">
+    <IconButton color="primary" component="span">
+      {formData.hostPhoto ? (
+        <img
+          src={formData.hostPhoto.preview}
+          alt="호스트 사진"
+          style={{ width: '80px', height: '80px', objectFit: 'cover' }}
+        />
+      ) : (
+        <PhotoCamera />
+      )}
+    </IconButton>
+  </label>
+  
+  <TextField
+    fullWidth
+    label="호스트 닉네임"
+    name="hostNickname"
+    onChange={handleChange}
+    sx={{ flex: 1, ml: 1 }} 
+  />
+</Box>
+
+
+          
+          {formData.hostPhoto && (
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <img
+                src={formData.hostPhoto.preview}
+                alt="호스트 사진"
+                style={{ width: '80px', height: '80px', objectFit: 'cover', marginRight: '16px' }}
+              />
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => {
+                  URL.revokeObjectURL(formData.hostPhoto.preview);
+                  setFormData({ ...formData, hostPhoto: null });
+                }}
+              >
+                삭제
+              </Button>
+            </Box>
+          )}
           <TextField
             fullWidth
             label="호스트 소개"
