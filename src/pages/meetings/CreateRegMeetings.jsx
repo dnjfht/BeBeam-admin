@@ -15,8 +15,21 @@ export default function CreateRegMeetings() {
 
   // 모달에서 데이터 생성 시 호출될 함수
   const handleCreateMeeting = (newMeeting) => {
-    setMeetingData((prevData) => [...prevData, newMeeting]); 
+    const transformedMeeting = {
+      id: newMeeting.id,
+      profile: newMeeting.modelPhotos.length > 0 ? newMeeting.modelPhotos[0].preview : '', // 첫 번째 사진을 프로필로 설정
+      nickname: newMeeting.hostNickname,
+      meetingName: newMeeting.modelName,
+      location: newMeeting.modelAddress,
+      startDate: newMeeting.schedules[0]?.date?.toLocaleDateString() || '', // 첫 번째 일정 날짜
+      participants: newMeeting.maxCount,
+      participationFee: '무료', // 이 필드는 임의로 설정하였으니 수정 가능합니다.
+      wishCount: 0, // 임의 초기화, 필요에 따라 수정 가능
+    };
+    
+    setMeetingData((prevData) => [...prevData, transformedMeeting]);
   };
+    
 
   // 테이블 컬럼 정의
   const columns = [

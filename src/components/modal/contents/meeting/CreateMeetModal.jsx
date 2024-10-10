@@ -24,6 +24,9 @@ const style = {
 
 const selectionOptions = ['선발형', '선착순'];
 
+const hashtagOptions = ['야외활동', '실내활동', '친목도모', '운동', '예술', '음악', '여행', '스터디', '취미', '요리'];
+
+
 export default function CreateMeetingModal({ open, handleClose, onCreateMeeting }) {
   const [formData, setFormData] = useState({
     modelName: '',
@@ -38,6 +41,15 @@ export default function CreateMeetingModal({ open, handleClose, onCreateMeeting 
     hostDescription: '',
   });
   const [isPostcodeVisible, setIsPostcodeVisible] = useState(false);
+  const [selectedTags, setSelectedTags] = useState([]);
+
+const handleTagSelect = (tag) => {
+  if (selectedTags.includes(tag)) {
+    setSelectedTags(selectedTags.filter((t) => t !== tag));
+  } else if (selectedTags.length < 3) {
+    setSelectedTags([...selectedTags, tag]);
+  }
+};
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -156,6 +168,22 @@ export default function CreateMeetingModal({ open, handleClose, onCreateMeeting 
             rows={4}
             sx={{ mb: 2 }}
           />
+
+          <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
+            해시태그 선택 (최대 3개까지)
+          </Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+            {hashtagOptions.map((tag) => (
+              <Button
+                key={tag}
+                variant={selectedTags.includes(tag) ? 'contained' : 'outlined'}
+                onClick={() => handleTagSelect(tag)}
+              >
+                #{tag}
+              </Button>
+            ))}
+          </Box>
+
           <TextField
             fullWidth
             label="모임 장소를 선택해주세요."
