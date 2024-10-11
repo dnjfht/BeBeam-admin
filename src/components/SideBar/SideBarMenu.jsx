@@ -41,8 +41,7 @@ export default function SideBarMenu({
       [{ text: "모임", icon: <FaPeopleGroup /> }],
       [
         { text: "모임 리스트", url: "/meetings" },
-        { text: "정기모임 생성", url: "/createRegMeetings" },
-        { text: "모집 중인 모임 리스트", url: "/openMeetings" },
+        { text: "정기모임 개설", url: "/createRegMeetings" },
         { text: "삭제된 모임 리스트", url: "/deleteMeetings" },
       ],
     ],

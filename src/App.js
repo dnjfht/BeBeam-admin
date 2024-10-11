@@ -16,7 +16,6 @@ import SignUpAndResignUsers from "./pages/user/SignUpAndResignUsers";
 import ForceResignUsers from "./pages/user/ForceResignUsers";
 import Meetings from "./pages/meetings/Meetings";
 import CreateRegMeetings from "./pages/meetings/CreateRegMeetings";
-import OpenMeetings from "./pages/meetings/OpenMeetings";
 import DeleteMeetings from "./pages/meetings/DeleteMeetings";
 import Comments from "./pages/comment/Comments";
 import DeleteComments from "./pages/comment/DeleteComments";
@@ -75,10 +74,6 @@ function App() {
         {
           path: "/createRegMeetings",
           element: <CreateRegMeetings />,
-        },
-        {
-          path: "/openMeetings",
-          element: <OpenMeetings />,
         },
         {
           path: "/deleteMeetings",

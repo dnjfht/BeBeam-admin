@@ -1,11 +1,6 @@
-import { Button } from "@mui/material";
-import React, { useState } from 'react';
+import { useState } from 'react';
 import CreateMeetingModal from "../../components/modal/contents/meeting/CreateMeetModal";
 import Table from "../../components/table/Table";
-
-  // 1. 생성 버튼을 누르면 모달창을 띄운다. 
-  // 2. 모달창에서 입력한 조건으로 생성이 되어야 한다.
-  // 3. 모달창에서 생성된 데이터는 정기모임 테이블에 리스트 형식으로 나열된다.
 
 export default function CreateRegMeetings() {
   const [open, setOpen] = useState(false);
@@ -17,39 +12,80 @@ export default function CreateRegMeetings() {
   const handleCreateMeeting = (newMeeting) => {
     const transformedMeeting = {
       id: newMeeting.id,
-      profile: newMeeting.modelPhotos.length > 0 ? newMeeting.modelPhotos[0].preview : '', // 첫 번째 사진을 프로필로 설정
-      nickname: newMeeting.hostNickname,
+      state : newMeeting.meetingState,
+      type : newMeeting.selectionType,
+      thumbnail : newMeeting.thumbnail.preview ?? '', // 맨 위에서 받은 모임 대표 이미지
       meetingName: newMeeting.modelName,
+      meetingDes: newMeeting.modelDescription,
+      hostName: newMeeting.hostNickname,
       location: newMeeting.modelAddress,
-      startDate: newMeeting.schedules[0]?.date?.toLocaleDateString() || '', // 첫 번째 일정 날짜
-      participants: newMeeting.maxCount,
+      startRecruitmentDate: newMeeting.startRecruitmentDate, // 모집 시작일 날짜
+      finishRecruitmentDate: newMeeting.finishRecruitmentDate, // 마지막 모임 일정 날짜
+      startMeetingDate: newMeeting.schedules[0]?.date?.toLocaleDateString() || '', // 모임 시작일
+      finishMeetingDate: newMeeting.schedules[newMeeting.schedules.length -1]?.date?.toLocaleDateString() || '', // 모임 마지막일
+      minParticipants: 3,
+      maxParticipants: newMeeting.maxCount,
+      currentApplicant : 0,
       participationFee: '무료', // 이 필드는 임의로 설정하였으니 수정 가능합니다.
       wishCount: 0, // 임의 초기화, 필요에 따라 수정 가능
+      hashTags : newMeeting.hashTags
     };
     
     setMeetingData((prevData) => [...prevData, transformedMeeting]);
   };
 
-
   // 테이블 컬럼 정의
   const columns = [
-    { field: 'id', headerName: 'ID', width: 90 },
-    { field: 'profile', headerName: '프로필', width: 150 },
-    { field: 'nickname', headerName: '닉네임', width: 150 },
-    { field: 'meetingName', headerName: '모임명', width: 200 },
+    { field: 'id', headerName: 'ID', width: 90, renderCell: () => <span>***********</span>, },
+    { field: 'state', headerName: '모임 상태', width: 90 },
+    { field: 'type', headerName: '모집 형태', width: 90 },
+    {field: 'thumbnail', headerName: '썸네일', width: 70,
+      sortable: false,
+      renderCell: (params) => (
+        <img
+          src={params.row.thumbnail}
+          alt="모임 대표 이미지"
+          style={{
+            width: 40,
+            height: 40,
+            objectFit: "cover",
+            borderRadius: "100%",
+          }}
+        />
+      ),},
+    { field: 'meetingName', headerName: '모임명', width: 120 },
+    { field: 'meetingDes', headerName: '모임 소개', width: 200 },
+    { field: 'hostName', headerName: '호스트', width: 120 },  
     { field: 'location', headerName: '개최 장소', width: 200 },
-    { field: 'startDate', headerName: '모집 시작일', width: 150 },
-    { field: 'participants', headerName: '모집 참여자 수', width: 200 },
-    { field: 'participationFee', headerName: '참여비', width: 150 },
-    { field: 'wishCount', headerName: '찜 수', width: 150 },
+    { field: 'startRecruitmentDate', headerName: '모집 시작일', width: 100 },
+    { field: 'finishRecruitmentDate', headerName: '모집 마감일', width: 100 },
+    { field: 'startMeetingDate', headerName: '모임 시작일', width: 100 },
+    { field: 'finishMeetingDate', headerName: '모임 종료일', width: 100 },
+    { field: 'minParticipants', headerName: '최소 참여인원', width: 100 },
+    { field: 'maxParticipants', headerName: '최대 참여인원', width: 100 },
+    { field: 'currentApplicant', headerName: '현재 신청인원', width: 100 },
+    { field: 'participationFee', headerName: '참여비', width: 100 },
+    { field: 'wishCount', headerName: '찜 수', width: 70 },
+    { field: 'hashTags', headerName: '해쉬태그', width: 100, 
+      renderCell: (params) => (
+      <div className="flex flex-col items-start gap-y-2">
+      {params.row.hashTags?.map((hashTag) => <p>{hashTag}</p>)}
+      </div>
+    ),
+  },
   ];
   
   return (
     <div>
-      <Button variant="outlined" onClick={handleOpen}>
+      <h1 className="mb-6 text-[1.5rem] font-bold">정기모임 개설</h1>
+
+    <div className="w-full mb-3 flex justify-end">
+      <button onClick={handleOpen} className='px-3 py-2 bg-[#121212] rounded-lg text-white'>
         정기모임 개설하기
-      </Button>
-      <CreateMeetingModal open={open} handleClose={handleClose} onCreateMeeting={handleCreateMeeting} />
+      </button>
+    </div>
+
+      <CreateMeetingModal open={open} setOpen={setOpen} handleClose={handleClose} onCreateMeeting={handleCreateMeeting} />
       
       <Table 
         columns={columns} 
