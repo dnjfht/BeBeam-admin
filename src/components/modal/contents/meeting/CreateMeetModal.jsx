@@ -28,7 +28,7 @@ export default function CreateMeetingModal({ open, setOpen, onCreateMeeting }) {
     meetingState: "모집 중",
     modelName: '',
     selectionType: '',
-    maxCount: '',
+    maxCount: 0,
     modelDescription: '',
     modelAddress: '',
     detailedAddress: '',
@@ -38,6 +38,7 @@ export default function CreateMeetingModal({ open, setOpen, onCreateMeeting }) {
     hostNickname: '',
     hostDescription: '',
     hostPhoto: null,
+    participationFee: 0,
   });
 
   const [isPostcodeVisible, setIsPostcodeVisible] = useState(false);
@@ -53,9 +54,14 @@ const handleTagSelect = (tag) => {
 
 };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+const handleChange = (e) => {
+  const { name, value } = e.target;
+  setFormData({
+    ...formData,
+    [name]: name === 'maxCount' || name === 'participationFee' ? Number(value) : value,
+  });
+};
+
 
   const handleAddressComplete = (data) => {
     setFormData({ ...formData, modelAddress: data.address });
@@ -131,16 +137,77 @@ const handleTagSelect = (tag) => {
     }));
   };
 
+
   const handleCreateMeeting = () => {
+
+    if (!formData.thumbnail) {
+      alert("대표 사진을 설정해 주세요."); 
+      return; 
+    }
+  
+    if (!formData.modelName) {
+      alert("모임 이름을 입력해 주세요.");
+      return; 
+    }
+  
+
+    if (!formData.selectionType) {
+      alert("모집 형태를 선택해 주세요."); 
+      return; 
+    }
+
+    if (formData.maxCount <= 0) {
+      alert("최대 인원을 설정해 주세요."); 
+      return; 
+    }
+  
+
+    if (!formData.modelDescription) {
+      alert("모임 설명을 입력해 주세요.");
+      return; 
+    }
+  
+    if (!formData.modelAddress) {
+      alert("모임 주소를 입력해 주세요."); 
+      return; 
+    }
+  
+    if (!formData.detailedAddress) {
+      alert("상세 주소를 입력해 주세요."); 
+      return;
+    }
+
+    if (!formData.hostNickname) {
+      alert("호스트 닉네임을 입력해 주세요."); 
+      return; 
+    }
+
+    if (!formData.hostDescription) {
+      alert("호스트 설명을 입력해 주세요."); 
+      return; 
+    }
+  
+
+    if (!formData.hostPhoto) {
+      alert("호스트 사진을 설정해 주세요."); 
+      return; 
+    }
+  
+
+    if (formData.participationFee < 0) {
+      alert("참여비를 0 이상으로 설정해 주세요."); 
+      return; 
+    }
+  
     const newMeeting = {
       id: new Date().getTime(),
-      hashTags : selectedTags,
+      hashTags: selectedTags,
       ...formData,
     };
     onCreateMeeting(newMeeting);
     setOpen(false);
   };
-
+  
   const thumbnail = formData.thumbnail ? (
     <img src={formData.thumbnail.preview} alt="대표 사진"
     className="w-full h-full object-cover"/>
@@ -249,6 +316,21 @@ const handleTagSelect = (tag) => {
   </div>   
   <TextField fullWidth label="호스트 소개" name="hostDescription" onChange={handleChange} multiline rows={3}/>
 </div>
+
+<TextField 
+  fullWidth 
+  label="참가비" 
+  name="entryFee" 
+  onChange={handleChange}
+  type="number"
+  inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', style: { MozAppearance: 'textfield' } }}
+  sx={{
+    '& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button': {
+      WebkitAppearance: 'none',
+      margin: 0,
+    }
+  }}
+/>
 
 <div className="mt-7 text-[#8a8a8a]">
   <div className={`${formData.meetingPhotos.length === 0 ? "mb-0" : "mb-4"} flex justify-between items-center`}>
