@@ -139,17 +139,15 @@ const handleChange = (e) => {
 
 
   const handleCreateMeeting = () => {
-
     if (!formData.thumbnail) {
       alert("대표 사진을 설정해 주세요."); 
       return; 
     }
-  
+
     if (!formData.modelName) {
       alert("모임 이름을 입력해 주세요.");
       return; 
     }
-  
 
     if (!formData.selectionType) {
       alert("모집 형태를 선택해 주세요."); 
@@ -160,18 +158,17 @@ const handleChange = (e) => {
       alert("최대 인원을 설정해 주세요."); 
       return; 
     }
-  
 
     if (!formData.modelDescription) {
       alert("모임 설명을 입력해 주세요.");
       return; 
     }
-  
+
     if (!formData.modelAddress) {
       alert("모임 주소를 입력해 주세요."); 
       return; 
     }
-  
+
     if (!formData.detailedAddress) {
       alert("상세 주소를 입력해 주세요."); 
       return;
@@ -186,27 +183,48 @@ const handleChange = (e) => {
       alert("호스트 설명을 입력해 주세요."); 
       return; 
     }
-  
 
     if (!formData.hostPhoto) {
       alert("호스트 사진을 설정해 주세요."); 
       return; 
     }
-  
 
     if (formData.participationFee < 0) {
       alert("참여비를 0 이상으로 설정해 주세요."); 
       return; 
     }
-  
+
     const newMeeting = {
       id: new Date().getTime(),
       hashTags: selectedTags,
       ...formData,
     };
     onCreateMeeting(newMeeting);
-    setOpen(false);
-  };
+    
+    // Reset formData to initial values
+    setFormData({
+      startRecruitmentDate : formatDate(currentDate),
+      finishRecruitmentDate : formatDate(new Date(currentDate.setDate(currentDate.getDate() + 21))),
+      meetingState: "모집 중",
+      modelName: '',
+      selectionType: '',
+      maxCount: 0,
+      modelDescription: '',
+      modelAddress: '',
+      detailedAddress: '',
+      thumbnail : null,
+      meetingPhotos: [],
+      schedules: [],
+      hostNickname: '',
+      hostDescription: '',
+      hostPhoto: null,
+      participationFee: 0,
+    });
+
+    setSelectedTags([]); // Reset selected tags
+    setOpen(false); // Close the modal
+};
+
   
   const thumbnail = formData.thumbnail ? (
     <img src={formData.thumbnail.preview} alt="대표 사진"
