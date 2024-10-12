@@ -201,7 +201,7 @@ const handleChange = (e) => {
     };
     onCreateMeeting(newMeeting);
     
-    // Reset formData to initial values
+
     setFormData({
       startRecruitmentDate : formatDate(currentDate),
       finishRecruitmentDate : formatDate(new Date(currentDate.setDate(currentDate.getDate() + 21))),
@@ -221,8 +221,8 @@ const handleChange = (e) => {
       participationFee: 0,
     });
 
-    setSelectedTags([]); // Reset selected tags
-    setOpen(false); // Close the modal
+    setSelectedTags([]); 
+    setOpen(false); 
 };
 
   
@@ -343,6 +343,7 @@ const handleChange = (e) => {
   type="number"
   inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', style: { MozAppearance: 'textfield' } }}
   sx={{
+    mt: 2.5,
     '& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button': {
       WebkitAppearance: 'none',
       margin: 0,
