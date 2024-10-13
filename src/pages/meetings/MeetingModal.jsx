@@ -43,6 +43,20 @@ const MeetingModal = ({ isOpen, onClose, meeting = mockMeeting, onDelete }) => {
     const [activeTab, setActiveTab] = useState('details'); // 현재 활성화된 탭 상태
     const [isDropdownOpen, setDropdownOpen] = useState(false); // 드롭다운 상태
 
+    const [approvalStatus, setApprovalStatus] = useState({
+        user1: '',
+        user2: '',
+        user3: '',
+      });
+    
+      // Function to handle approval status change for each user
+      const handleApprovalChange = (user, status) => {
+        setApprovalStatus((prevStatus) => ({
+          ...prevStatus,
+          [user]: status,
+        }));
+      };
+
     if (!isOpen || !meeting) return null;
 
     const handleDelete = () => {
@@ -83,24 +97,24 @@ const MeetingModal = ({ isOpen, onClose, meeting = mockMeeting, onDelete }) => {
                     <div className="tab-content">
                         <div className="meeting-info">
                             <div className="info-row">
-                                <FaUser className="info-icon" /> {/* 호스트 아이콘 */}
+                                 {/* 호스트 아이콘 */}
                                 <div className="info-text">
                                     <strong>호스트 닉네임</strong>
-                                    <span>{meeting.hostNickname}</span>
+                                    <span className="styled-location"><FaUser className="info-icon" />{meeting.hostNickname}</span>
                                 </div>
                             </div>
                             <div className="info-row">
-                                <FaMapMarkerAlt className="info-icon" /> {/* 개최 장소 아이콘 */}
+                                 {/* 개최 장소 아이콘 */}
                                 <div className="info-text">
                                     <strong>개최 장소</strong>
-                                    <span>{meeting.location}</span>
+                                    <span className="styled-location"><FaMapMarkerAlt className="info-icon" />{meeting.location}</span>
                                 </div>
                             </div>
                             <div className="info-row">
-                                <FaUsers className="info-icon" /> {/* 모집 인원 아이콘 */}
+                                 {/* 모집 인원 아이콘 */}
                                 <div className="info-text">
                                     <strong>모집 인원</strong>
-                                    <span>{meeting.participantCount}명</span>
+                                    <span className="styled-location"><FaUsers className="info-icon" /> {meeting.participantCount}명</span>
                                 </div>
                             </div>
                         </div>
@@ -110,13 +124,13 @@ const MeetingModal = ({ isOpen, onClose, meeting = mockMeeting, onDelete }) => {
                             <h4>활동 일정</h4>
                             <div className="activity-row">
                                 <span>1회차:</span>
-                                <FaCalendarAlt className="calendar-icon" />
-                                <span>{meeting.startDate}</span>
+                                
+                                <span className="styled-location"> <FaCalendarAlt className="calendar-icon" />{meeting.startDate}</span>
                             </div>
                             <div className="activity-row">
                                 <span>2회차:</span>
-                                <FaCalendarAlt className="calendar-icon" />
-                                <span>{meeting.endDate}</span>
+                                
+                                <span className="styled-location"> <FaCalendarAlt className="calendar-icon" />{meeting.endDate}</span>
                             </div>
                         </div>
 
@@ -133,44 +147,113 @@ const MeetingModal = ({ isOpen, onClose, meeting = mockMeeting, onDelete }) => {
                     </div>
                 )}
 
-                {/* 신청자 리스트 섹션 */}
-                {activeTab === 'list' && meeting && meeting.applicants && (
-                    <div className="tab-content">
-                        <div className="applicant-list-header">
-                            <span>닉네임</span>
-                            <span>신청 사유</span>
-                            <span>수락거절여부</span>
-                        </div>
-                        {meeting.applicants.map((applicant, index) => (
-                            <div key={index} className="applicant-item">
-                                <div className="checkbox-column">
-                                    <input type="checkbox" />
-                                </div>
-                                <div className="applicant-info">
-                                    <img src={applicant.profileImage} alt="profile" className="profile-image" />
-                                    <div>
-                                        <strong>{applicant.nickname}</strong>
-                                        <span>{applicant.email}</span>
-                                    </div>
-                                </div>
-                                <div className="applicant-reason">
-                                    <span>{applicant.reason}</span>
-                                </div>
-                                <div className="approval-dropdown">
-                                    <select>
-                                        <option value="pending">수락거절여부</option>
-                                        <option value="accept">수락</option>
-                                        <option value="reject">거절</option>
-                                    </select>
-                                </div>
+                {activeTab === 'list' && (
+                        <div className="tab-content">
+                            <div className="participant-list">
+                            <div className="search-bar">
+                                <input type="text" placeholder="닉네임을 검색하세요." />
+                                <button className="search-btn">
+                                <i className="fa fa-search"></i>
+                                </button>
                             </div>
-                        ))}
-                        <div className="action-buttons">
-                            <button className="accept-button">수락</button>
-                            <button className="reject-button">거절</button>
+
+                            <div className="table-container">
+                                <table>
+                                <thead>
+                                    <tr>
+                                    <th><input type="checkbox" /></th>
+                                    <th>닉네임</th>
+                                    <th>신청 사유</th>
+                                    <th>수락거부여부</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                    <td><input type="checkbox" /></td>
+                                    <td>
+                                        <div className="nickname">
+                                        <img src="host.png" alt="profile" className="profile-img" />
+                                        내가 바로 HOST <span className="host-badge">HOST</span>
+                                        <div className="email">host@gmail.com</div>
+                                        </div>
+                                    </td>
+                                    <td>HOST</td>
+                                    <td>HOST</td>
+                                    </tr>
+                                    <tr>
+                                    <td><input type="checkbox" /></td>
+                                    <td>
+                                        <div className="nickname">
+                                        <img src="applicant.png" alt="profile" className="profile-img" />
+                                        내가 바로 신청자
+                                        <div className="email">gggg@gmail.com</div>
+                                        </div>
+                                    </td>
+                                    <td>재밌어 보여서 신청했어요!</td>
+                                    <td>
+                                        <select
+                                        value={approvalStatus.user1}
+                                        onChange={(e) => handleApprovalChange('user1', e.target.value)}
+                                        >
+                                        <option value="">수락거절여부</option>
+                                        <option value="수락">수락</option>
+                                        <option value="거절">거절</option>
+                                        </select>
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td><input type="checkbox" /></td>
+                                    <td>
+                                        <div className="nickname">
+                                        <img src="applicant.png" alt="profile" className="profile-img" />
+                                        내가 바로 신청자
+                                        <div className="email">gggg@gmail.com</div>
+                                        </div>
+                                    </td>
+                                    <td>재밌어 보여서 신청했어요!</td>
+                                    <td>
+                                        <select
+                                        value={approvalStatus.user2}
+                                        onChange={(e) => handleApprovalChange('user2', e.target.value)}
+                                        >
+                                        <option value="">수락거절여부</option>
+                                        <option value="수락">수락</option>
+                                        <option value="거절">거절</option>
+                                        </select>
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td><input type="checkbox" /></td>
+                                    <td>
+                                        <div className="nickname">
+                                        <img src="applicant.png" alt="profile" className="profile-img" />
+                                        내가 바로 신청자
+                                        <div className="email">gggg@gmail.com</div>
+                                        </div>
+                                    </td>
+                                    <td>재밌어 보여서 신청했어요!</td>
+                                    <td>
+                                        <select
+                                        value={approvalStatus.user3}
+                                        onChange={(e) => handleApprovalChange('user3', e.target.value)}
+                                        >
+                                        <option value="">수락거절여부</option>
+                                        <option value="수락">수락</option>
+                                        <option value="거절">거절</option>
+                                        </select>
+                                    </td>
+                                    </tr>
+                                </tbody>
+                                </table>
+                            </div>
+
+                            <div className="actions">
+                                <button className="approve-btn">수락</button>
+                                <button className="reject-btn">거절</button>
+                            </div>
+                            </div>
                         </div>
-                    </div>
-                )}
+                        )}
 
                 <button className="close-button-bottom" onClick={onClose}>닫기</button>
             </div>
