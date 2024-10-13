@@ -87,8 +87,17 @@ const handleChange = (e) => {
   const handleScheduleChange = (index, field, value) => {
     const newSchedules = [...formData.schedules];
     newSchedules[index][field] = value;
+  
+    // 시작일 변경 시 종료일을 자동으로 +28일로 설정
+    if (field === 'date') {
+      const endDate = new Date(value);
+      endDate.setDate(endDate.getDate() + 28);
+      newSchedules[index]['endDate'] = endDate;  // 종료일 필드 추가
+    }
+  
     setFormData({ ...formData, schedules: newSchedules });
   };
+  
 
   const removeSchedule = (index) => {
     const newSchedules = formData.schedules.filter((_, i) => i !== index);

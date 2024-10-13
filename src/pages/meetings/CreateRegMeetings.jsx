@@ -28,7 +28,7 @@ export default function CreateRegMeetings() {
       startRecruitmentDate: newMeeting.startRecruitmentDate,
       finishRecruitmentDate: newMeeting.finishRecruitmentDate,
       startMeetingDate: newMeeting.schedules[0]?.date?.toLocaleDateString() || '',
-      finishMeetingDate: newMeeting.schedules[newMeeting.schedules.length -1]?.date?.toLocaleDateString() || '',
+      finishMeetingDate: newMeeting.schedules[0]?.endDate?.toLocaleDateString() || '',  
       minParticipants: 3,
       maxParticipants: newMeeting.maxCount,
       currentApplicant: 0,
@@ -39,6 +39,7 @@ export default function CreateRegMeetings() {
     
     setMeetingData((prevData) => [...prevData, transformedMeeting]);
   };
+  
 
   const handleMenuClick = (event, row) => {
     event.preventDefault();
