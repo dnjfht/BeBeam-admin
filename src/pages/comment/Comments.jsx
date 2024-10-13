@@ -8,7 +8,6 @@ import {
   UsersState,
 } from "../../recoil/user";
 import { CommunityReviewsDataState } from "../../recoil/review";
-
 import UserModal from "../../components/modal/user/UserModal";
 import UserMenu from "../../components/menu/user/UserMenu";
 import Table from "../../components/table/Table";

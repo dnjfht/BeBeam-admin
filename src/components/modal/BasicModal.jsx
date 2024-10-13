@@ -32,6 +32,7 @@ const style = {
 export default function BasicModal({
   isModalOpen,
   setIsModalOpen,
+  isMoreMenu=true,
   setAnchorEl,
   children,
 }) {
@@ -43,15 +44,17 @@ export default function BasicModal({
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <div className="relative flex justify-between w-full">
+          <div className="relative flex w-full">
             <Button
               icon={<RiMore2Line />}
+              styles={`${isMoreMenu ? "block" : "hidden"} mr-auto`}
               onClick={(e) => {
                 setAnchorEl(e.currentTarget);
               }}
             />
             <Button
               icon={<BsXLg />}
+              styles="ml-auto"
               onClick={() => {
                 setIsModalOpen(false);
               }}
