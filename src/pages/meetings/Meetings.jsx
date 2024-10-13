@@ -1,5 +1,4 @@
 import React, { useState } from 'react'; 
-import { useNavigate } from 'react-router-dom'; // useNavigate import 추가
 import './Meetings.css';
 import { DataGrid } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
@@ -50,12 +49,10 @@ const meetingData = [
       participantCount: 30,
       notes: '패널 발표 예정',
   },
-  // ... (다른 데이터 생략)
 ];
 
-
 // 테이블 컴포넌트
-function Table({ columns, datas, children, ischeckbox, selectedIdList, setSelectedIdList, onRowClick }) {
+function Table({ columns, datas, selectedIdList, setSelectedIdList, clickedRowId, handleMeetingNameClick }) {
   const paginationModel = {
       page: 0,
       pageSize: 10,
@@ -77,15 +74,13 @@ function Table({ columns, datas, children, ischeckbox, selectedIdList, setSelect
                       paddingY: 1,
                   },
               }}
-              checkboxSelection={ischeckbox}
+              checkboxSelection={true}
               disableRowSelectionOnClick
               rowSelectionModel={selectedIdList}
               onRowSelectionModelChange={(newRowSelectionModel) => {
                   setSelectedIdList(newRowSelectionModel);
               }}
-              onRowClick={onRowClick} // 클릭 핸들러 추가
           />
-          {children}
       </Paper>
   );
 }
@@ -96,12 +91,34 @@ export default function Meetings() {
   const [filterStatus, setFilterStatus] = useState('전체');
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 추가
   const [selectedMeeting, setSelectedMeeting] = useState(null); // 선택한 모임 정보 상태
-  const isCheckboxEnabled = true; // 체크박스 활성화 여부
+  const [clickedRowId, setClickedRowId] = useState(null); // 클릭한 행의 ID 저장
 
   const columns = [
       { field: 'id', headerName: 'ID', width: 90 },
       { field: 'hostNickname', headerName: '호스트 닉네임', width: 150 },
-      { field: 'meetingName', headerName: '모임명', width: 200 },
+      { 
+          field: 'meetingName', 
+          headerName: '모임명', 
+          width: 200, 
+          renderCell: (params) => (
+              <div>
+                  <span
+                      style={{ cursor: 'pointer', color: 'black' }} 
+                      onClick={() => handleMeetingNameClick(params.row.id)} // 모임명을 클릭했을 때 버튼 표시
+                  >
+                      {params.value}
+                  </span>
+                  {/* 클릭된 행과 동일한 경우에만 버튼을 표시 */}
+                  {clickedRowId === params.row.id && (
+                      <div style={{ marginTop: '5px', border: '1px solid black', padding: '10px', borderRadius: '8px', textAlign: 'center', width: '150px' }}>
+                          <button onClick={() => handleViewMeetingClick(params.row.id)}>모임보기</button>
+                          <hr />
+                          <button onClick={handleCloseButtonClick}>닫기</button>
+                      </div>
+                  )}
+              </div>
+          ),
+      },
       { field: 'location', headerName: '개최 장소', width: 150 },
       { field: 'recruitmentStatus', headerName: '모집 상태', width: 120 },
       { field: 'startDate', headerName: '모임 시작일', width: 150 },
@@ -110,17 +127,25 @@ export default function Meetings() {
       { field: 'notes', headerName: '비고', width: 200 },
   ];
 
-  // 필터링된 데이터
-  const filteredData = meetingData.filter((meeting) => {
-      if (filterStatus === '모집 중') return meeting.recruitmentStatus === '모집 중';
-      if (filterStatus === '모집 마감') return meeting.recruitmentStatus === '모집 마감';
-      return true; // 전체
-  });
+  // 모임명 클릭 시 실행되는 함수
+  const handleMeetingNameClick = (rowId) => {
+      if (clickedRowId === rowId) {
+          setClickedRowId(null); // 이미 클릭된 모임명을 다시 클릭하면 버튼 숨기기
+      } else {
+          setClickedRowId(rowId); // 클릭한 모임 ID 설정
+      }
+  };
 
-  // 모임 클릭 시 실행되는 함수
-  const handleRowClick = (params) => {
-      setSelectedMeeting(params.row); // 클릭한 모임 정보를 설정
+  // "모임보기" 버튼 클릭 시 모달 열기
+  const handleViewMeetingClick = (meetingId) => {
+      const meeting = meetingData.find((m) => m.id === meetingId);
+      setSelectedMeeting(meeting); // 선택한 모임 정보 설정
       setIsModalOpen(true); // 모달 열기
+  };
+
+  // "닫기" 버튼 클릭 시 버튼 숨기기
+  const handleCloseButtonClick = () => {
+      setClickedRowId(null); // 버튼 숨기기
   };
 
   return (
@@ -135,11 +160,11 @@ export default function Meetings() {
               <h1>모집 리스트</h1>
               <Table
                   columns={columns}
-                  datas={filteredData}
-                  ischeckbox={isCheckboxEnabled}
+                  datas={meetingData}
                   selectedIdList={selectedIdList}
                   setSelectedIdList={setSelectedIdList}
-                  onRowClick={handleRowClick} // 클릭 핸들러 전달
+                  clickedRowId={clickedRowId} // 클릭된 행 ID 전달
+                  handleMeetingNameClick={handleMeetingNameClick} // 모임명 클릭 핸들러 전달
               />
           </div>
 
@@ -152,4 +177,3 @@ export default function Meetings() {
       </div>
   );
 }
-
