@@ -1,7 +1,4 @@
-import { useEffect, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { IsLoginState } from "./recoil/login";
 
 import "react-toastify/dist/ReactToastify.css";
 import { StyledToastContainer } from "./StyledComponents";
@@ -9,6 +6,7 @@ import { StyledToastContainer } from "./StyledComponents";
 import NotFoundPage from "./pages/NotFoundPage";
 import Root from "./pages/Root";
 import Home from "./pages/Home";
+import Login from "./pages/Login";
 import Admins from "./pages/admin/Admins";
 import SignUpAndResignAdmins from "./pages/admin/SignUpAndResignAdmins";
 import Users from "./pages/user/Users";
@@ -20,26 +18,12 @@ import DeleteMeetings from "./pages/meetings/DeleteMeetings";
 import Comments from "./pages/comment/Comments";
 import DeleteComments from "./pages/comment/DeleteComments";
 import HashTags from "./pages/HashTags";
-import Login from "./pages/Login";
 
 function App() {
-  const [isLogin, setIsLogin] = useRecoilState(IsLoginState);
-  const [isAfterLogin, setIsAfterLogin] = useState(false);
-
-  useEffect(() => {
-    setIsLogin(JSON.parse(localStorage.getItem("isLogin")));
-  }, []);
-
   const router = createBrowserRouter([
     {
       path: "/",
-      element: (
-        <Root
-          isLogin={isLogin}
-          isAfterLogin={isAfterLogin}
-          setIsAfterLogin={setIsAfterLogin}
-        />
-      ),
+      element: <Root />,
       errorElement: <NotFoundPage />,
       children: [
         { index: true, element: <Home /> },
@@ -93,13 +77,7 @@ function App() {
         },
         {
           path: "/login",
-          element: (
-            <Login
-              isLogin={isLogin}
-              setIsLogin={setIsLogin}
-              setIsAfterLogin={setIsAfterLogin}
-            />
-          ),
+          element: <Login />,
         },
       ],
     },

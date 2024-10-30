@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { IsLoginState } from "../../recoil/login";
-import { useSetRecoilState } from "recoil";
+
 import Button from "../button/Button";
 import { Toast } from "../toast/Toast";
 import SideBarMenu from "./SideBarMenu";
@@ -9,10 +8,13 @@ import SideBarMenu from "./SideBarMenu";
 import { CiInstagram, CiGlobe, CiLogin } from "react-icons/ci";
 import { PiHandSwipeLeft } from "react-icons/pi";
 
-export default function SideBar({ isSidebarOpen, setIsSidebarOpen }) {
+export default function SideBar({
+  isSidebarOpen,
+  setIsSidebarOpen,
+  setAccessToken,
+}) {
   const navigate = useNavigate();
 
-  const setIsLogin = useSetRecoilState(IsLoginState);
   const [dropMenu, setDropMenu] = useState({ num: 0, isActive: false });
 
   return (
@@ -68,10 +70,11 @@ export default function SideBar({ isSidebarOpen, setIsSidebarOpen }) {
         <Button
           icon={<CiLogin />}
           onClick={() => {
-            if (window.confirm("🤔로그아웃 하시겠습니까?🤔")) {
-              setIsLogin(false);
-              localStorage.setItem("isLogin", JSON.stringify(false));
-              Toast("🥺로그아웃 하였습니다!🥺");
+            if (window.confirm("로그아웃 하시겠습니까?")) {
+              localStorage.removeItem("accessToken");
+              setAccessToken("");
+              navigate("/login");
+              Toast("로그아웃 하였습니다.");
             }
           }}
           styles="ml-auto mr-2"
