@@ -136,7 +136,7 @@ export default function Meetings() {
       }
   };
 
-  // "모임보기" 버튼 클릭 시 모달 열기
+  // "모임보기" 버튼 클릭 시 모달 열기!
   const handleViewMeetingClick = (meetingId) => {
       const meeting = meetingData.find((m) => m.id === meetingId);
       setSelectedMeeting(meeting); // 선택한 모임 정보 설정
