@@ -1,9 +1,53 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "./MeetingModal.css"; // 스타일을 위한 CSS 파일
+import {
+  FaTimes,
+  FaEllipsisV,
+  FaMapMarkerAlt,
+  FaUser,
+  FaUsers,
+  FaCalendarAlt,
+} from "react-icons/fa"; // 필요한 아이콘들
 
-import { FaTimes, FaEllipsisV } from "react-icons/fa";
+// 가짜 데이터 생성
+const mockMeeting = {
+  id: 1,
+  hostNickname: "내가 바로 HOST",
+  location: "서울시 강남구",
+  participantCount: 4,
+  recruitmentStatus: "모집 마감",
+  startDate: "2024-10-01",
+  endDate: "2024-10-10",
+  applicants: [
+    {
+      profileImage: "/path/to/host-image.jpg",
+      nickname: "내가 바로 HOST",
+      email: "host@gmail.com",
+      reason: "HOST",
+    },
+    {
+      profileImage: "/path/to/user1-image.jpg",
+      nickname: "내가 바로 신청자",
+      email: "gggg@gmail.com",
+      reason: "재밌어 보여서 신청했어요!",
+    },
+    {
+      profileImage: "/path/to/user2-image.jpg",
+      nickname: "내가 바로 신청자",
+      email: "gggg@gmail.com",
+      reason: "재밌어 보여서 신청했어요!",
+    },
+    {
+      profileImage: "/path/to/user3-image.jpg",
+      nickname: "내가 바로 신청자",
+      email: "gggg@gmail.com",
+      reason: "재밌어 보여서 신청했어요!",
+    },
+  ],
+};
 
-const MeetingModal = ({ isOpen, onClose, meeting, onDelete }) => {
+const MeetingModal = ({ isOpen, onClose, meeting = mockMeeting, onDelete }) => {
+  const [activeTab, setActiveTab] = useState("details"); // 현재 활성화된 탭 상태
   const [isDropdownOpen, setDropdownOpen] = useState(false); // 드롭다운 상태
 
   if (!isOpen || !meeting) return null;
