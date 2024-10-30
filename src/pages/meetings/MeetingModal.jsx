@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import "./MeetingModal.css"; // 스타일을 위한 CSS 파일
-import {
-  FaTimes,
-  FaEllipsisV,
-  FaMapMarkerAlt,
-  FaUser,
-  FaUsers,
-  FaCalendarAlt,
-} from "react-icons/fa"; // 필요한 아이콘들
+import { FaTimes, FaEllipsisV } from "react-icons/fa"; // 필요한 아이콘들
 
 // 가짜 데이터 생성
 const mockMeeting = {

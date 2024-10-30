@@ -1,35 +1,40 @@
 import Typewriter from "typewriter-effect";
 import Input from "../components/input/TextInput";
-import useInput from "../customHook/useInput";
 import Button from "../components/button/Button";
 import { Toast } from "../components/toast/Toast";
 
 import { btnBasicStyle, btnStyle, textInputStyle } from "../constants";
 import { HiOutlineXMark } from "react-icons/hi2";
+import { fetchAdminLogin } from "../api/user";
+import { useRecoilState } from "recoil";
+import { AccessTokenState } from "../recoil/login";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const Login = ({ isLogin, setIsLogin, setIsAfterLogin }) => {
-  const [id, onChangeId, onDeleteId] = useInput();
-  const [pw, onChangePW, onDeletePW] = useInput();
+const Login = () => {
+  const navigate = useNavigate();
 
-  // 임의로 지정된 ID와 PW
-  const adminAccount = { id: "admin", pw: "bebeam0000" };
+  const [accessToken, setAccessToken] = useRecoilState(AccessTokenState);
+  const [id, setId] = useState("");
+  const [pw, setPw] = useState("");
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-
-    // 로그인 로직 (예: API 호출) : 나중에
-
-    if (id === adminAccount.id && pw === adminAccount.pw) {
-      setIsLogin(true);
-      setIsAfterLogin(true);
-      localStorage.setItem("isLogin", JSON.stringify(true));
-      Toast("🥰로그인 하였습니다.!🥰");
-    } else if (!isLogin) {
-      setIsLogin(false);
-      localStorage.setItem("isLogin", JSON.stringify(false));
-      Toast("😬ID 또는 PW가 일치하지 않습니다.!😬");
+  const handleLogin = async () => {
+    try {
+      const accessToken = await fetchAdminLogin(id, pw);
+      localStorage.setItem("accessToken", accessToken);
+      setAccessToken(await fetchAdminLogin(id, pw));
+      navigate("/");
+      Toast("로그인이 완료되었습니다.");
+    } catch (error) {
+      Toast("로그인을 실패하였습니다.");
     }
   };
+
+  useEffect(() => {
+    if (accessToken) {
+      navigate("/");
+    }
+  }, [accessToken, navigate]);
 
   return (
     <div className="w-full md:h-[100vh] bg-black md:flex">
@@ -50,17 +55,17 @@ const Login = ({ isLogin, setIsLogin, setIsAfterLogin }) => {
             ADMIN PAGE
           </p>
 
-          <form className="w-full mt-14" onSubmit={handleLogin}>
+          <div>
             <Input
               text={id}
               placeHolder="ID를 입력하세요."
-              onChange={onChangeId}
+              onChange={(e) => setId(e.target.value)}
               basicStyles={textInputStyle.login}
               styles="mb-5"
             >
               <Button
                 icon={<HiOutlineXMark />}
-                onClick={onDeleteId}
+                onClick={() => setId("")}
                 basicStyles={btnBasicStyle["login-delete"]}
                 styles={`${btnStyle["login-delete"]} ${
                   id.length === 0 ? "opacity-0" : "opacity-100"
@@ -71,12 +76,12 @@ const Login = ({ isLogin, setIsLogin, setIsAfterLogin }) => {
               type="password"
               text={pw}
               placeHolder="PW를 입력하세요."
-              onChange={onChangePW}
+              onChange={(e) => setPw(e.target.value)}
               basicStyles={textInputStyle.login}
             >
               <Button
                 icon={<HiOutlineXMark />}
-                onClick={onDeletePW}
+                onClick={() => setPw("")}
                 basicStyles={btnBasicStyle["login-delete"]}
                 styles={`${btnStyle["login-delete"]} ${
                   pw.length === 0 ? "opacity-0" : "opacity-100"
@@ -97,7 +102,7 @@ const Login = ({ isLogin, setIsLogin, setIsAfterLogin }) => {
             >
               로그인
             </Button>
-          </form>
+          </div>
         </div>
       </div>
 
