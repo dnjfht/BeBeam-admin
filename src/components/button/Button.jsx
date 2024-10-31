@@ -7,11 +7,16 @@ export default function Button({
   basicStyles,
   styles,
   disabled,
+  enableStyles,
 }) {
   return (
     <button
       type={type}
-      className={`${basicStyles} ${styles}`}
+      className={`${basicStyles} ${styles} ${
+        disabled
+          ? "bg-[#ccc] border-[1px] border-solid border-[#ccc] text-white"
+          : `${enableStyles} border-solid`
+      }`}
       onClick={onClick}
       disabled={disabled}
     >

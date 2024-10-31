@@ -1,5 +1,57 @@
 import axios from "axios";
 
+// 모임, 툴킷 데이터 받아오기
+export const dataFetch = async (detailUrl, pageNum, sizeNum = 10) => {
+  try {
+    const res = await axios({
+      method: "get",
+      url: `https://prod.be-beam.site/api/web/v1/${detailUrl}?page=${pageNum}&size=${sizeNum}`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return res.data.result;
+  } catch (error) {
+    console.error("Error fetching Data Fetch:", error);
+    throw error;
+  }
+};
+
+// 특정 모임, 툴킷 데이터 받아오기
+export const detailDataFetch = async (detailUrl) => {
+  try {
+    const res = await axios({
+      method: "get",
+      url: `https://prod.be-beam.site/api/web/v1/${detailUrl}`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return res.data.result;
+  } catch (error) {
+    console.error("Error fetching Detail Data Fetch:", error);
+    throw error;
+  }
+};
+
+// 정기모임 삭제
+export const deleteMeetingDataFetch = async (accessToken, meetingId) => {
+  try {
+    const res = await axios({
+      method: "delete",
+      url: `https://prod.be-beam.site/api/admin-x8kp62iw/v1/meetings/${meetingId}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return res.data.result;
+  } catch (error) {
+    console.error("Error fetching Detail Data Fetch:", error);
+    throw error;
+  }
+};
+
 // 정기모임 생성
 export const createRegularMeeting = async (
   accessToken,
@@ -70,6 +122,29 @@ export const createRegularMeeting = async (
     return res.data.result;
   } catch (error) {
     console.error("Error Create Meeting:", error);
+    throw error;
+  }
+};
+
+// 전체모임 신청자들/참여자들 데이터 받아오기
+export const allMeetingParticipantsFetch = async (
+  accessToken,
+  status,
+  page = 1,
+  size = 10
+) => {
+  try {
+    const res = await axios({
+      method: "get",
+      url: `https://prod.be-beam.site/api/admin-x8kp62iw/v1/participants?page=${page}&size=${size}&${status}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return res.data.result;
+  } catch (error) {
+    console.error("Error fetching All Meeting Participants Data Fetch:", error);
     throw error;
   }
 };

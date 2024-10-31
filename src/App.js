@@ -1,4 +1,7 @@
+import { useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { AccessTokenState } from "./recoil/login";
 
 import "react-toastify/dist/ReactToastify.css";
 import { StyledToastContainer } from "./StyledComponents";
@@ -20,10 +23,22 @@ import DeleteComments from "./pages/comment/DeleteComments";
 import HashTags from "./pages/HashTags";
 
 function App() {
+  const [accessToken, setAccessToken] = useRecoilState(AccessTokenState);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    setAccessToken(accessToken);
+  }, [setAccessToken]);
+
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Root />,
+      element:
+        accessToken === "" ? (
+          <Login />
+        ) : (
+          <Root setAccessToken={setAccessToken} />
+        ),
       errorElement: <NotFoundPage />,
       children: [
         { index: true, element: <Home /> },
@@ -74,10 +89,6 @@ function App() {
         {
           path: "/hashTags",
           element: <HashTags />,
-        },
-        {
-          path: "/login",
-          element: <Login />,
         },
       ],
     },

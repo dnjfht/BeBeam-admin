@@ -1,34 +1,13 @@
-import { useEffect, useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { AccessTokenState } from "../recoil/login";
-import { UsersState } from "../recoil/user";
-import { CommunityReviewsDataState } from "../recoil/review";
-import { userList, reviewCommentList } from "../constants";
+import { useState } from "react";
+import { Outlet, useLocation } from "react-router-dom";
 
 import SideBar from "../components/SideBar/SideBar";
 import Header from "../components/header/Header";
 
-export default function Root() {
-  const navigate = useNavigate();
+export default function Root({ setAccessToken }) {
   const pathname = useLocation().pathname;
-  console.log(pathname);
 
-  const [accessToken, setAccessToken] = useRecoilState(AccessTokenState);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    setAccessToken(accessToken);
-  }, [setAccessToken]);
-
-  useEffect(() => {
-    if (accessToken === "") {
-      navigate("/login");
-    } else {
-      navigate(pathname);
-    }
-  }, [accessToken, pathname, navigate]);
 
   return (
     <>

@@ -1,5 +1,17 @@
 // 공통적으로 사용하는 함수들
 
+export function handleConsoleError(isLoading, error, datas) {
+  const comment = isLoading
+    ? "Loading..."
+    : error
+    ? "An error has occurred...!"
+    : datas?.length === 0
+    ? "데이터가 없습니다."
+    : null;
+
+  return comment;
+}
+
 export const handleNicknameClick = (
   e,
   row,
@@ -11,12 +23,16 @@ export const handleNicknameClick = (
   setAnchorEl(e.currentTarget);
   setSelectedNickname(row.닉네임);
 
-  if(isUsers) {
+  if (isUsers) {
     setSelectedId(row.id);
-  } else if(!isUsers) {
+  } else if (!isUsers) {
     setSelectedId(row.userId);
   }
- 
+};
+
+export const handleMeetingNameClick = (e, row, setAnchorEl, setSelectedId) => {
+  setAnchorEl(e.currentTarget);
+  setSelectedId(row.id);
 };
 
 // 현재 날짜 데이터 => ex) 2024.09.21
@@ -27,6 +43,26 @@ export const currentDateFormat = (date) => {
   const day = String(date.getDate()).padStart(2, "0");
 
   return `${year}.${month}.${day}`;
+};
+
+// 현재 날짜 + 시간 데이터 => 2024.10.15 오후 3시
+export const currentDateFormat2 = (dateString) => {
+  const date = new Date(dateString);
+
+  const options = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "numeric",
+    hour12: true,
+    timeZone: "Asia/Seoul",
+  };
+
+  const formattedDate = date.toLocaleString("ko-KR", options);
+  return formattedDate
+    .replace(",", "")
+    .replace("AM", "오전")
+    .replace("PM", "오후");
 };
 
 // -분 전, -시간 전, -일 전, -달 전, -년 전

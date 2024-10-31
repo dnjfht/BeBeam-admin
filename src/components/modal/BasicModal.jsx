@@ -32,38 +32,36 @@ const style = {
 export default function BasicModal({
   isModalOpen,
   setIsModalOpen,
-  isMoreMenu=true,
+  isMoreMenu = true,
   setAnchorEl,
   children,
 }) {
   return (
-    <div className={`${isModalOpen ? "block" : "hidden"}`}>
-      <Modal
-        open={isModalOpen}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <div className="relative flex w-full">
-            <Button
-              icon={<RiMore2Line />}
-              styles={`${isMoreMenu ? "block" : "hidden"} mr-auto`}
-              onClick={(e) => {
-                setAnchorEl(e.currentTarget);
-              }}
-            />
-            <Button
-              icon={<BsXLg />}
-              styles="ml-auto"
-              onClick={() => {
-                setIsModalOpen(false);
-              }}
-            />
-          </div>
+    <Modal
+      open={isModalOpen}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={style}>
+        <div className="relative flex w-full">
+          <Button
+            icon={<RiMore2Line />}
+            styles={`${isMoreMenu ? "" : "hidden"} mr-auto`}
+            onClick={(e) => {
+              setAnchorEl(e.currentTarget);
+            }}
+          />
+          <Button
+            icon={<BsXLg />}
+            styles="ml-auto"
+            onClick={() => {
+              setIsModalOpen(false);
+            }}
+          />
+        </div>
 
-          <div className="mt-4">{children}</div>
-        </Box>
-      </Modal>
-    </div>
+        <div className="mt-4">{children}</div>
+      </Box>
+    </Modal>
   );
 }

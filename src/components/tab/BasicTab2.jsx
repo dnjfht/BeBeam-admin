@@ -6,10 +6,7 @@ import { TabContext } from "@mui/lab";
 import { Box, Tab, Tabs } from "@mui/material";
 import TabContent from "./TabContent";
 
-export default function BasicTab({ tabList, children }) {
-  const [tab, setTab] = useRecoilState(TabState);
-  console.log(tab);
-
+export default function BasicTab2({ tabList, tab, setTab, mtStyle, children }) {
   const handleChange = (e, tab) => {
     setTab(tab);
   };
@@ -21,7 +18,7 @@ export default function BasicTab({ tabList, children }) {
           width: "100%",
           borderBottom: 1,
           borderColor: "divider",
-          marginTop: 4,
+          marginTop: mtStyle,
         }}
       >
         <Tabs
@@ -37,7 +34,8 @@ export default function BasicTab({ tabList, children }) {
           ))}
         </Tabs>
       </Box>
-      <TabContent value={tab} children={children} />
+
+      {children}
     </TabContext>
   );
 }

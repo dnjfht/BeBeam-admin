@@ -30,12 +30,6 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    if (accessToken) {
-      navigate("/");
-    }
-  }, [accessToken, navigate]);
-
   return (
     <div className="w-full md:h-[100vh] bg-black md:flex">
       <div className="lg:py-0 sm:py-[100px] py-[60px] flex items-center justify-center w-full lg:h-full xl:w-1/3 md:w-[44%] sm:w-full">

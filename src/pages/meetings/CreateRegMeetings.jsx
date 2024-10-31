@@ -3,7 +3,7 @@ import { useState } from "react";
 import CreateMeetingModal from "../../components/modal/contents/meeting/CreateMeetModal";
 import Table from "../../components/table/Table";
 import { Menu, MenuItem } from "@mui/material";
-import MeetingModal from "./MeetingModal";
+import MeetingModal from "../../components/modal/contents/meeting/MeetingDetailModal";
 
 export default function CreateRegMeetings() {
   const [open, setOpen] = useState(false);
