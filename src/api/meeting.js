@@ -172,6 +172,30 @@ export const allMeetingParticipantsFetch = async (
   }
 };
 
+// 특정모임 신청자들/참여자들 데이터 받아오기
+export const meetingParticipantsFetch = async (
+  accessToken,
+  meetingId,
+  status,
+  page = 1,
+  size = 10
+) => {
+  try {
+    const res = await axios({
+      method: "get",
+      url: `https://prod.be-beam.site/api/admin-x8kp62iw/v1/meetings/${meetingId}/participants?page=${page}&size=${size}&${status}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return res.data.result;
+  } catch (error) {
+    console.error("Error fetching All Meeting Participants Data Fetch:", error);
+    throw error;
+  }
+};
+
 // 신청자 수락/거절하기
 export const acceptOrRejectMeetingParticipantsFetch = async (
   accessToken,

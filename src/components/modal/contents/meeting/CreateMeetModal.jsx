@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { TextField, Modal, Input } from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
-import { useRecoilValue } from "recoil";
-import { AccessTokenState } from "../../../../recoil/login";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createRegularMeeting } from "../../../../api/meeting";
 import Postcode from "react-daum-postcode";
 
@@ -12,8 +10,13 @@ import { Toast } from "../../../toast/Toast";
 
 import { BsXLg } from "react-icons/bs";
 
-export default function CreateMeetingModal({ open, setOpen, onCreateMeeting }) {
-  const accessToken = useRecoilValue(AccessTokenState);
+export default function CreateMeetingModal({
+  accessToken,
+  open,
+  setOpen,
+  page,
+}) {
+  const queryClient = useQueryClient();
 
   const selectionOptions = ["선발형", "선착순"];
   const hashtagOptions = [
@@ -99,8 +102,12 @@ export default function CreateMeetingModal({ open, setOpen, onCreateMeeting }) {
         selectedTags
       ),
     onSuccess: () => {
-      // updateMeetingData();
       Toast("모임을 생성하였습니다.");
+      return queryClient.invalidateQueries([
+        "regularMeetingDatas",
+        accessToken,
+        page,
+      ]);
     },
   });
 

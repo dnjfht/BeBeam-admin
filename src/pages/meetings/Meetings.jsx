@@ -134,7 +134,6 @@ export default function Meetings() {
     },
   ];
   const filterMenuDatas = isModalOpen ? menuDatas.slice(1) : menuDatas;
-
   const totalPages = datas?.pageInfo?.totalPages;
 
   console.log(datas);

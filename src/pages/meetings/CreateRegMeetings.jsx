@@ -4,128 +4,139 @@ import CreateMeetingModal from "../../components/modal/contents/meeting/CreateMe
 import Table from "../../components/table/Table";
 import { Menu, MenuItem } from "@mui/material";
 import MeetingModal from "../../components/modal/contents/meeting/MeetingDetailModal";
+import { currentDateFormat2, handleMeetingNameClick } from "../../common";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AccessTokenState } from "../../recoil/login";
+import { useRecoilValue } from "recoil";
+import { allMeetingDataFetch, deleteMeetingDataFetch } from "../../api/meeting";
+import BasicMenu from "../../components/menu/BasicMenu";
+import { Toast } from "../../components/toast/Toast";
+import Button from "../../components/button/Button";
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi2";
+import { btnBasicStyle } from "../../constants";
 
 export default function CreateRegMeetings() {
+  const queryClient = useQueryClient();
+  const accessToken = useRecoilValue(AccessTokenState);
+
   const [open, setOpen] = useState(false);
-  const [meetingData, setMeetingData] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedMeeting, setSelectedMeeting] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [page, setPage] = useState(1);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const handleCloseMenu = () => setAnchorEl(null);
-
-  const handleCreateMeeting = (newMeeting) => {
-    const transformedMeeting = {
-      id: newMeeting.id,
-      state: newMeeting.meetingState,
-      type: newMeeting.selectionType,
-      thumbnail: newMeeting.thumbnail.preview ?? "",
-      meetingName: newMeeting.modelName,
-      meetingDes: newMeeting.modelDescription,
-      hostName: newMeeting.hostNickname,
-      location: newMeeting.modelAddress,
-      startRecruitmentDate: newMeeting.startRecruitmentDate,
-      finishRecruitmentDate: newMeeting.finishRecruitmentDate,
-      startMeetingDate:
-        newMeeting.schedules[0]?.date?.toLocaleDateString() || "",
-      finishMeetingDate:
-        newMeeting.schedules[0]?.endDate?.toLocaleDateString() || "",
-      minParticipants: 3,
-      maxParticipants: newMeeting.maxCount,
-      currentApplicant: 0,
-      participationFee: "무료",
-      wishCount: 0,
-      hashTags: newMeeting.hashTags,
-    };
-
-    setMeetingData((prevData) => [...prevData, transformedMeeting]);
-  };
-
-  const handleMenuClick = (event, row) => {
-    event.preventDefault();
-    setAnchorEl(event.currentTarget);
-    setSelectedMeeting(row);
-  };
-
-  const handleOpenDetails = () => {
-    setIsModalOpen(true);
-    handleCloseMenu();
-  };
+  const { data: datas } = useQuery({
+    queryKey: ["regularMeetingDatas", accessToken, page],
+    queryFn: async () => {
+      const result = await allMeetingDataFetch(accessToken, page, 10, {
+        search: "",
+        status: "recruiting",
+        type: "regular",
+      });
+      return result;
+    },
+  });
 
   const columns = [
+    { field: "id", headerName: "ID", width: 50 },
     {
-      field: "id",
-      headerName: "ID",
-      width: 90,
-      renderCell: () => <span>***********</span>,
-    },
-    { field: "state", headerName: "모임 상태", width: 90 },
-    { field: "type", headerName: "모집 형태", width: 90 },
-    {
-      field: "thumbnail",
-      headerName: "썸네일",
+      field: "thumbnailImage",
+      headerName: "썸네일 이미지",
       width: 70,
       sortable: false,
       renderCell: (params) => (
         <img
-          src={params.row.thumbnail}
-          alt="모임 대표 이미지"
+          src={params.row["thumbnailImage"]}
+          alt="thumbnailImage"
           style={{
-            width: 40,
-            height: 40,
+            width: 50,
+            height: 50,
             objectFit: "cover",
-            borderRadius: "100%",
+            borderRadius: "10px",
+            border: "1px solid #8d8d8d",
           }}
         />
       ),
     },
     {
-      field: "meetingName",
+      field: "name",
       headerName: "모임명",
-      width: 120,
+      width: 200,
       renderCell: (params) => (
         <span
-          onClick={(event) => handleMenuClick(event, params.row)}
+          onClick={(e) =>
+            handleMeetingNameClick(e, params.row, setAnchorEl, setSelectedId)
+          }
           style={{ cursor: "pointer" }}
         >
           {params.value}
         </span>
       ),
     },
-    { field: "meetingDes", headerName: "모임 소개", width: 200 },
-    { field: "hostName", headerName: "호스트", width: 120 },
-    { field: "location", headerName: "개최 장소", width: 200 },
-    { field: "startRecruitmentDate", headerName: "모집 시작일", width: 100 },
-    { field: "finishRecruitmentDate", headerName: "모집 마감일", width: 100 },
-    { field: "startMeetingDate", headerName: "모임 시작일", width: 100 },
-    { field: "finishMeetingDate", headerName: "모임 종료일", width: 100 },
-    { field: "minParticipants", headerName: "최소 참여인원", width: 100 },
-    { field: "maxParticipants", headerName: "최대 참여인원", width: 100 },
-    { field: "currentApplicant", headerName: "현재 신청인원", width: 100 },
-    { field: "participationFee", headerName: "참여비", width: 100 },
-    { field: "wishCount", headerName: "찜 수", width: 70 },
+    { field: "recruitmentType", headerName: "모임 형태", width: 90 },
+    { field: "recruitmentStatus", headerName: "모임 상태", width: 90 },
+    { field: "selectionType", headerName: "선발 형태", width: 90 },
+    { field: "location", headerName: "개최 장소", width: 150 },
     {
-      field: "hashTags",
-      headerName: "해쉬태그",
-      width: 100,
+      field: "meetingDatetime",
+      headerName: "모집 마감일",
+      width: 120,
       renderCell: (params) => (
-        <div className="flex flex-col items-start gap-y-2">
-          {params.row.hashTags?.map((hashTag) => (
-            <p key={hashTag}>{hashTag}</p>
-          ))}
-        </div>
+        <p>{currentDateFormat2(params.row["meetingDatetime"])}</p>
       ),
     },
+    { field: "minParticipants", headerName: "최소 모집인원", width: 90 },
+    { field: "maxParticipants", headerName: "최대 모집인원", width: 90 },
+    { field: "participantCount", headerName: "수락된 인원", width: 90 },
+    { field: "paymentAmount", headerName: "참가비", width: 120 },
   ];
+
+  const deleteMeetingMutation = useMutation({
+    mutationFn: () => deleteMeetingDataFetch(accessToken, selectedId),
+    onSuccess: () => {
+      Toast("모임을 삭제하였습니다.");
+      return queryClient.invalidateQueries(["meetingDatas", page]);
+    },
+  });
+
+  const menuDatas = [
+    {
+      text: "모임 상세 정보",
+      onClick: () => {
+        setIsModalOpen(true);
+        setAnchorEl(null);
+      },
+    },
+    {
+      text: "모임 삭제",
+      onClick: () => {
+        if (window.confirm("정말 삭제하시겠습니까?")) {
+          try {
+            deleteMeetingMutation.mutate();
+          } catch (error) {
+            Toast("모임 삭제를 실패하였습니다.");
+          }
+        }
+
+        setAnchorEl(null);
+      },
+    },
+    {
+      text: "취소",
+      onClick: () => {
+        setAnchorEl(null);
+      },
+    },
+  ];
+  const filterMenuDatas = isModalOpen ? menuDatas.slice(1) : menuDatas;
+  const totalPages = datas?.pageInfo?.totalPages;
 
   return (
     <div>
       <h1 className="mb-6 text-[1.5rem] font-bold">정기모임 개설</h1>
       <div className="flex justify-end w-full mb-3">
         <button
-          onClick={handleOpen}
+          onClick={() => setOpen(true)}
           className="px-3 py-2 bg-[#121212] rounded-lg text-white"
         >
           정기모임 개설하기
@@ -133,27 +144,57 @@ export default function CreateRegMeetings() {
       </div>
 
       <CreateMeetingModal
+        accessToken={accessToken}
         open={open}
         setOpen={setOpen}
-        handleClose={handleClose}
-        onCreateMeeting={handleCreateMeeting}
+        page={page}
       />
 
-      <Table columns={columns} datas={meetingData} />
+      <Table columns={columns} datas={datas?.meetings}>
+        <BasicMenu
+          anchorEl={anchorEl}
+          setAnchorEl={setAnchorEl}
+          menuDatas={filterMenuDatas}
+        />
 
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleCloseMenu}
-      >
-        <MenuItem onClick={handleOpenDetails}>모임 상세</MenuItem>
-        <MenuItem onClick={handleCloseMenu}>취소</MenuItem>
-      </Menu>
+        <p className="absolute left-3 bottom-[14px]">
+          {page}/{totalPages} pages
+        </p>
+
+        <div className="absolute bottom-[10px] right-3 text-[1.4rem] flex items-center gap-x-2">
+          <Button
+            icon={<HiChevronLeft />}
+            onClick={() => {
+              if (page > 1) {
+                setPage((prev) => prev - 1);
+              }
+            }}
+            basicStyles={btnBasicStyle.basic}
+            styles="p-1 rounded-lg"
+            disabled={page === 1}
+            enableStyles="bg-[#282828] text-white"
+          />
+          <Button
+            icon={<HiChevronRight />}
+            onClick={() => {
+              if (totalPages > page) {
+                setPage((prev) => prev + 1);
+              }
+            }}
+            basicStyles={btnBasicStyle.basic}
+            styles="p-1 rounded-lg"
+            disabled={page >= totalPages}
+            enableStyles="bg-[#282828] text-white"
+          />
+        </div>
+      </Table>
 
       <MeetingModal
+        accessToken={accessToken}
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        meeting={selectedMeeting}
+        setIsModalOpen={setIsModalOpen}
+        selectedId={selectedId}
+        setAnchorEl={setAnchorEl}
       />
     </div>
   );

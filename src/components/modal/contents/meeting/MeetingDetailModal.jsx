@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  acceptMeetingParticipantsFetch,
   acceptOrRejectMeetingParticipantsFetch,
-  allMeetingParticipantsFetch,
   detailDataFetch,
+  meetingParticipantsFetch,
 } from "../../../../api/meeting";
 import { currentDateFormat2, handleConsoleError } from "../../../../common";
 
@@ -24,6 +23,7 @@ import {
   CiBookmarkCheck,
 } from "react-icons/ci";
 import { PiMoneyWavyThin } from "react-icons/pi";
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi2";
 
 const MeetingDetailModal = ({
   accessToken,
@@ -37,7 +37,7 @@ const MeetingDetailModal = ({
   const [tabCount, setTabCount] = useState("1");
   const [participantsState, setParticipantsState] = useState("");
   const [participantsDatas, setParticipantsDatas] = useState([]);
-  const [filterDatas, setFilterDatas] = useState([]);
+  const [page, setPage] = useState(1);
 
   const { isLoading, error, data } = useQuery({
     queryKey: ["meetingDetailDatas", isOpen],
@@ -58,9 +58,11 @@ const MeetingDetailModal = ({
   const { data: meetingParticipantDatas } = useQuery({
     queryKey: ["meetingParticipantDatas", isOpen, participantsState],
     queryFn: async () => {
-      const result = await allMeetingParticipantsFetch(
+      const result = await meetingParticipantsFetch(
         accessToken,
-        participantsState
+        selectedId,
+        participantsState,
+        page
       );
       return result;
     },
@@ -76,14 +78,6 @@ const MeetingDetailModal = ({
       );
     }
   }, [meetingParticipantDatas]);
-
-  useEffect(() => {
-    if (participantsDatas) {
-      setFilterDatas(
-        participantsDatas?.filter((data) => data?.meetingId === selectedId)
-      );
-    }
-  }, [participantsDatas, selectedId]);
 
   const comment = handleConsoleError(isLoading, error, data);
 
@@ -187,7 +181,9 @@ const MeetingDetailModal = ({
     },
   ];
 
-  console.log(data, meetingParticipantDatas, filterDatas);
+  const totalPages = meetingParticipantDatas?.pageInfo?.totalPages ?? 1;
+  console.log(data, meetingParticipantDatas, participantsDatas);
+  console.log(totalPages);
 
   return (
     <BasicModal
@@ -216,6 +212,7 @@ const MeetingDetailModal = ({
         tabList={[
           "모임 상세정보",
           data?.state === "모집중" ? "신청자 리스트" : "참여자 리스트",
+          data?.state === "모집중" ? null : "리뷰 리스트",
         ]}
         tab={tabCount}
         setTab={setTabCount}
@@ -307,7 +304,76 @@ const MeetingDetailModal = ({
         </TabContent>
 
         <TabContent value="2">
-          <Table columns={columns} datas={filterDatas} height="60vh" />
+          <Table columns={columns} datas={participantsDatas} height="60vh">
+            <p className="absolute left-3 bottom-[14px]">
+              {page}/{totalPages} pages
+            </p>
+
+            <div className="absolute bottom-[10px] right-3 text-[1.4rem] flex items-center gap-x-2">
+              <Button
+                icon={<HiChevronLeft />}
+                onClick={() => {
+                  if (page > 1) {
+                    setPage((prev) => prev - 1);
+                  }
+                }}
+                basicStyles={btnBasicStyle.basic}
+                styles="p-1 rounded-lg"
+                disabled={page === 1}
+                enableStyles="bg-[#282828] text-white"
+              />
+              <Button
+                icon={<HiChevronRight />}
+                onClick={() => {
+                  if (totalPages > page) {
+                    setPage((prev) => prev + 1);
+                  }
+                }}
+                basicStyles={btnBasicStyle.basic}
+                styles="p-1 rounded-lg"
+                disabled={page >= totalPages}
+                enableStyles="bg-[#282828] text-white"
+              />
+            </div>
+          </Table>
+        </TabContent>
+
+        <TabContent
+          value="3"
+          styles={{ display: data?.state === "모집중" ? "none" : "" }}
+        >
+          <Table columns={columns} datas={participantsDatas} height="60vh">
+            <p className="absolute left-3 bottom-[14px]">
+              {page}/{totalPages} pages
+            </p>
+
+            <div className="absolute bottom-[10px] right-3 text-[1.4rem] flex items-center gap-x-2">
+              <Button
+                icon={<HiChevronLeft />}
+                onClick={() => {
+                  if (page > 1) {
+                    setPage((prev) => prev - 1);
+                  }
+                }}
+                basicStyles={btnBasicStyle.basic}
+                styles="p-1 rounded-lg"
+                disabled={page === 1}
+                enableStyles="bg-[#282828] text-white"
+              />
+              <Button
+                icon={<HiChevronRight />}
+                onClick={() => {
+                  if (totalPages > page) {
+                    setPage((prev) => prev + 1);
+                  }
+                }}
+                basicStyles={btnBasicStyle.basic}
+                styles="p-1 rounded-lg"
+                disabled={page >= totalPages}
+                enableStyles="bg-[#282828] text-white"
+              />
+            </div>
+          </Table>
         </TabContent>
       </BasicTab2>
     </BasicModal>
