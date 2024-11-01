@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { dataFetch, deleteMeetingDataFetch } from "../../api/meeting";
+import {
+  allMeetingDataFetch,
+  dataFetch,
+  deleteMeetingDataFetch,
+} from "../../api/meeting";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { AnchorElState, SelectedIdState } from "../../recoil/user";
 import { AccessTokenState } from "../../recoil/login";
@@ -12,6 +16,7 @@ import BasicMenu from "../../components/menu/BasicMenu";
 import MeetingDetailModal from "../../components/modal/contents/meeting/MeetingDetailModal";
 import { btnBasicStyle } from "../../constants";
 import { Toast } from "../../components/toast/Toast";
+import BasicSelect from "../../components/select/BasicSelect";
 
 import { HiChevronRight, HiChevronLeft } from "react-icons/hi2";
 
@@ -19,17 +24,20 @@ export default function Meetings() {
   const queryClient = useQueryClient();
   const accessToken = useRecoilValue(AccessTokenState);
 
-  const [filterMeetingDatas, setFilterMeetingDatas] = useState([]);
-  const [filterStatus, setFilterStatus] = useState("전체");
+  const [filter, setFilter] = useState({
+    search: "",
+    status: "all",
+    type: "all",
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useRecoilState(SelectedIdState);
   const [anchorEl, setAnchorEl] = useRecoilState(AnchorElState);
   const [page, setPage] = useState(1);
 
   const { data: datas } = useQuery({
-    queryKey: ["meetingDatas", page],
+    queryKey: ["meetingDatas", accessToken, page, filter],
     queryFn: async () => {
-      const result = await dataFetch("meetings", page);
+      const result = await allMeetingDataFetch(accessToken, page, 10, filter);
       return result;
     },
   });
@@ -127,43 +135,47 @@ export default function Meetings() {
   ];
   const filterMenuDatas = isModalOpen ? menuDatas.slice(1) : menuDatas;
 
-  const filterDatas = ["전체", "모집중", "모집마감"];
-
-  useEffect(() => {
-    if (datas) {
-      if (filterStatus !== "전체") {
-        setFilterMeetingDatas(
-          datas?.meetings?.filter(
-            (meeting) => meeting.recruitmentStatus === filterStatus
-          )
-        );
-      } else {
-        setFilterMeetingDatas(datas?.meetings);
-      }
-    }
-  }, [datas, setFilterMeetingDatas, filterStatus]);
-
   const totalPages = datas?.pageInfo?.totalPages;
 
-  console.log(filterMeetingDatas);
+  console.log(datas);
 
   return (
     <div>
       <h1 className="mb-4 text-[1.5rem] font-bold">모임 리스트</h1>
 
-      <div className="flex items-center justify-end mb-3 gap-x-2">
-        {filterDatas.map((filter, index) => (
-          <Button
-            key={index}
-            text={filter}
-            basicStyles={btnBasicStyle["black-bg"]}
-            styles="px-4 py-3 rounded-lg"
-            onClick={() => setFilterStatus(filter)}
-          />
-        ))}
+      <div className="flex items-center justify-end w-full mb-3 gap-x-2">
+        <BasicSelect
+          id="meeting-type"
+          typeText="모임 타입"
+          value={filter.type}
+          onChange={(e) =>
+            setFilter((prev) => ({
+              ...prev,
+              type: e.target.value,
+            }))
+          }
+          datas={[
+            { value: "all", title: "전체" },
+            { value: "regular", title: "정기모임" },
+            { value: "small", title: "소모임" },
+          ]}
+        />
+        <BasicSelect
+          id="meeting-status"
+          typeText="모임 상태"
+          value={filter.status}
+          onChange={(e) =>
+            setFilter((prev) => ({ ...prev, status: e.target.value }))
+          }
+          datas={[
+            { value: "all", title: "전체" },
+            { value: "recruiting", title: "모집중" },
+            { value: "closed", title: "모집마감" },
+          ]}
+        />
       </div>
 
-      <Table columns={columns} datas={filterMeetingDatas}>
+      <Table columns={columns} datas={datas?.meetings}>
         <BasicMenu
           anchorEl={anchorEl}
           setAnchorEl={setAnchorEl}
