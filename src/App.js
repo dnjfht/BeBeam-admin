@@ -37,7 +37,7 @@ function App() {
         accessToken === "" ? (
           <Login />
         ) : (
-          <Root setAccessToken={setAccessToken} />
+          <Root accessToken={accessToken} setAccessToken={setAccessToken} />
         ),
       errorElement: <NotFoundPage />,
       children: [

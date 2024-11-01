@@ -148,3 +148,30 @@ export const allMeetingParticipantsFetch = async (
     throw error;
   }
 };
+
+// 신청자 수락/거절하기
+export const acceptOrRejectMeetingParticipantsFetch = async (
+  accessToken,
+  participationId,
+  status
+) => {
+  try {
+    const res = await axios({
+      method: "post",
+      url: `https://prod.be-beam.site/api/admin-x8kp62iw/v1/participations/${participationId}/${status}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return res.data.result;
+  } catch (error) {
+    console.error(
+      `Error fetching ${
+        status === "accept" ? "Accept" : "Reject"
+      } Meeting Participants Data Fetch:`,
+      error
+    );
+    throw error;
+  }
+};

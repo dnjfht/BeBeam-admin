@@ -4,10 +4,11 @@ import { Outlet, useLocation } from "react-router-dom";
 import SideBar from "../components/SideBar/SideBar";
 import Header from "../components/header/Header";
 
-export default function Root({ setAccessToken }) {
+export default function Root({ accessToken, setAccessToken }) {
   const pathname = useLocation().pathname;
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  console.log(accessToken);
 
   return (
     <>

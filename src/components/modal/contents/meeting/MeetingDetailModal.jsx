@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  acceptMeetingParticipantsFetch,
+  acceptOrRejectMeetingParticipantsFetch,
   allMeetingParticipantsFetch,
   detailDataFetch,
 } from "../../../../api/meeting";
@@ -11,6 +13,9 @@ import BasicTab2 from "../../../tab/BasicTab2";
 import TabContent from "../../../tab/TabContent";
 import MeetingSmallContentWrap from "../../../../pages/meetings/MeetingSmallContentWrap";
 import Table from "../../../table/Table";
+import Button from "../../../button/Button";
+import { btnBasicStyle } from "../../../../constants";
+import { Toast } from "../../../toast/Toast";
 
 import {
   CiLocationOn,
@@ -19,7 +24,6 @@ import {
   CiBookmarkCheck,
 } from "react-icons/ci";
 import { PiMoneyWavyThin } from "react-icons/pi";
-import Button from "../../../button/Button";
 
 const MeetingDetailModal = ({
   accessToken,
@@ -28,6 +32,8 @@ const MeetingDetailModal = ({
   selectedId,
   setAnchorEl,
 }) => {
+  const queryClient = useQueryClient();
+
   const [tabCount, setTabCount] = useState("1");
   const [participantsState, setParticipantsState] = useState("");
   const [participantsDatas, setParticipantsDatas] = useState([]);
@@ -81,6 +87,31 @@ const MeetingDetailModal = ({
 
   const comment = handleConsoleError(isLoading, error, data);
 
+  const acceptMeetingParticipantsMutation = useMutation({
+    mutationFn: (id) =>
+      acceptOrRejectMeetingParticipantsFetch(accessToken, id, "accept"),
+    onSuccess: () => {
+      Toast("신청을 수락하였습니다.");
+      return queryClient.invalidateQueries([
+        "meetingParticipantDatas",
+        isOpen,
+        participantsState,
+      ]);
+    },
+  });
+  const rejectMeetingParticipantsMutation = useMutation({
+    mutationFn: (id) =>
+      acceptOrRejectMeetingParticipantsFetch(accessToken, id, "reject"),
+    onSuccess: () => {
+      Toast("신청을 거절하였습니다.");
+      return queryClient.invalidateQueries([
+        "meetingParticipantDatas",
+        isOpen,
+        participantsState,
+      ]);
+    },
+  });
+
   const columns = [
     { field: "id", headerName: "ID", width: 50 },
     {
@@ -103,6 +134,7 @@ const MeetingDetailModal = ({
       ),
     },
     { field: "nickname", headerName: "닉네임", width: 90 },
+    { field: "joinReason", headerName: "신청 사유", width: 120 },
     { field: "name", headerName: "이름", width: 70 },
     { field: "gender", headerName: "성별", width: 70 },
     { field: "birthday", headerName: "생일", width: 90 },
@@ -111,18 +143,47 @@ const MeetingDetailModal = ({
     {
       field: "actions",
       headerName: "수락/거절",
-      width: 150,
+      width: 90,
       sortable: false,
-      renderCell: (params) => (
-        <div>
-          <Button text="수락" onClick={() => {}} />
+      renderCell: (params) =>
+        data?.state === "모집중" ? (
+          <div className="flex flex-col w-full mx-auto gap-y-1">
+            <Button
+              text="수락"
+              basicStyles={btnBasicStyle["black-bg"]}
+              styles="px-4 py-2 rounded-lg"
+              onClick={() => {
+                if (window.confirm("신청을 수락하시겠습니까?")) {
+                  try {
+                    acceptMeetingParticipantsMutation.mutate(params.row["id"]);
+                  } catch (error) {
+                    Toast("신청을 수락하지 못하였습니다.");
+                  }
+                }
+              }}
+            />
+            <Button
+              text="거절"
+              basicStyles={btnBasicStyle["black-bg"]}
+              styles="px-4 py-2 rounded-lg"
+              onClick={() => {
+                if (window.confirm("신청을 거절하시겠습니까?")) {
+                  try {
+                    rejectMeetingParticipantsMutation.mutate(params.row["id"]);
+                  } catch (error) {
+                    Toast("신청을 거절하지 못하였습니다.");
+                  }
+                }
+              }}
+            />
+          </div>
+        ) : (
           <Button
-            text="거절"
-            onClick={() => {}}
-            style={{ marginLeft: "8px" }}
+            text="내보내기"
+            basicStyles={btnBasicStyle["black-bg"]}
+            styles="px-4 py-2 rounded-lg"
           />
-        </div>
-      ),
+        ),
     },
   ];
 
@@ -246,7 +307,7 @@ const MeetingDetailModal = ({
         </TabContent>
 
         <TabContent value="2">
-          <Table columns={columns} datas={participantsDatas} height="60vh" />
+          <Table columns={columns} datas={filterDatas} height="60vh" />
         </TabContent>
       </BasicTab2>
     </BasicModal>
