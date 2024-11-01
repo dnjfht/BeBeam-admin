@@ -8,7 +8,7 @@ import { HiOutlineXMark } from "react-icons/hi2";
 import { fetchAdminLogin } from "../api/user";
 import { useRecoilState } from "recoil";
 import { AccessTokenState } from "../recoil/login";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -29,6 +29,7 @@ const Login = () => {
       Toast("로그인을 실패하였습니다.");
     }
   };
+  console.log(accessToken);
 
   return (
     <div className="w-full md:h-[100vh] bg-black md:flex">

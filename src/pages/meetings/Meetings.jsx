@@ -133,7 +133,9 @@ export default function Meetings() {
     if (datas) {
       if (filterStatus !== "전체") {
         setFilterMeetingDatas(
-          datas?.filter((meeting) => meeting.recruitmentStatus === filterStatus)
+          datas?.meetings?.filter(
+            (meeting) => meeting.recruitmentStatus === filterStatus
+          )
         );
       } else {
         setFilterMeetingDatas(datas?.meetings);
@@ -142,6 +144,8 @@ export default function Meetings() {
   }, [datas, setFilterMeetingDatas, filterStatus]);
 
   const totalPages = datas?.pageInfo?.totalPages;
+
+  console.log(filterMeetingDatas);
 
   return (
     <div>

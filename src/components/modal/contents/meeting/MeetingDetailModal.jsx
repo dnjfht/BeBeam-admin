@@ -19,6 +19,7 @@ import {
   CiBookmarkCheck,
 } from "react-icons/ci";
 import { PiMoneyWavyThin } from "react-icons/pi";
+import Button from "../../../button/Button";
 
 const MeetingDetailModal = ({
   accessToken,
@@ -30,6 +31,7 @@ const MeetingDetailModal = ({
   const [tabCount, setTabCount] = useState("1");
   const [participantsState, setParticipantsState] = useState("");
   const [participantsDatas, setParticipantsDatas] = useState([]);
+  const [filterDatas, setFilterDatas] = useState([]);
 
   const { isLoading, error, data } = useQuery({
     queryKey: ["meetingDetailDatas", isOpen],
@@ -69,18 +71,18 @@ const MeetingDetailModal = ({
     }
   }, [meetingParticipantDatas]);
 
+  useEffect(() => {
+    if (participantsDatas) {
+      setFilterDatas(
+        participantsDatas?.filter((data) => data?.meetingId === selectedId)
+      );
+    }
+  }, [participantsDatas, selectedId]);
+
   const comment = handleConsoleError(isLoading, error, data);
 
   const columns = [
     { field: "id", headerName: "ID", width: 50 },
-    {
-      field: "meetingCreatedAt",
-      headerName: "신청일",
-      width: 120,
-      renderCell: (params) => (
-        <p>{currentDateFormat2(params.row["meetingCreatedAt"])}</p>
-      ),
-    },
     {
       field: "profileImage",
       headerName: "프로필 이미지",
@@ -106,9 +108,25 @@ const MeetingDetailModal = ({
     { field: "birthday", headerName: "생일", width: 90 },
     { field: "phoneNumber", headerName: "전화번호", width: 90 },
     { field: "participationStatus", headerName: "상태", width: 90 },
+    {
+      field: "actions",
+      headerName: "수락/거절",
+      width: 150,
+      sortable: false,
+      renderCell: (params) => (
+        <div>
+          <Button text="수락" onClick={() => {}} />
+          <Button
+            text="거절"
+            onClick={() => {}}
+            style={{ marginLeft: "8px" }}
+          />
+        </div>
+      ),
+    },
   ];
 
-  console.log(data, meetingParticipantDatas);
+  console.log(data, meetingParticipantDatas, filterDatas);
 
   return (
     <BasicModal
