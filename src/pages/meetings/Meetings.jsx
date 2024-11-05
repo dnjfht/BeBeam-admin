@@ -1,12 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  allMeetingDataFetch,
-  dataFetch,
-  deleteMeetingDataFetch,
-} from "../../api/meeting";
+import { allMeetingDataFetch, deleteMeetingDataFetch } from "../../api/meeting";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { AnchorElState, SelectedIdState } from "../../recoil/user";
+import { SelectedIdState } from "../../recoil/user";
 import { AccessTokenState } from "../../recoil/login";
 import { currentDateFormat2, handleMeetingNameClick } from "../../common";
 
@@ -31,7 +27,7 @@ export default function Meetings() {
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useRecoilState(SelectedIdState);
-  const [anchorEl, setAnchorEl] = useRecoilState(AnchorElState);
+  const [anchorEl, setAnchorEl] = useState(null);
   const [page, setPage] = useState(1);
 
   const { data: datas } = useQuery({
@@ -135,8 +131,6 @@ export default function Meetings() {
   ];
   const filterMenuDatas = isModalOpen ? menuDatas.slice(1) : menuDatas;
   const totalPages = datas?.pageInfo?.totalPages;
-
-  console.log(datas);
 
   return (
     <div>

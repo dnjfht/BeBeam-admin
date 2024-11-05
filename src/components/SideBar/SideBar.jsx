@@ -72,7 +72,7 @@ export default function SideBar({
           onClick={() => {
             if (window.confirm("로그아웃 하시겠습니까?")) {
               localStorage.removeItem("accessToken");
-              setAccessToken("");
+              setAccessToken(null);
               navigate("/");
               Toast("로그아웃 하였습니다.");
             }

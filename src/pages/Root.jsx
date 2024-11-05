@@ -4,19 +4,13 @@ import { Outlet, useLocation } from "react-router-dom";
 import SideBar from "../components/SideBar/SideBar";
 import Header from "../components/header/Header";
 
-export default function Root({ accessToken, setAccessToken }) {
+export default function Root({ setAccessToken }) {
   const pathname = useLocation().pathname;
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  console.log(accessToken);
-
   return (
     <>
-      <div
-        className={`${
-          pathname === "/login" ? "hidden" : "block"
-        } w-full h-[100vh] p-3 box-border bg-black flex`}
-      >
+      <div className="w-full h-[100vh] p-3 box-border bg-black flex tracking-tighter whitespace-pre-wrap leading-normal">
         <SideBar
           isSidebarOpen={isSidebarOpen}
           setIsSidebarOpen={setIsSidebarOpen}

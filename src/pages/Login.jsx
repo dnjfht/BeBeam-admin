@@ -1,20 +1,17 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import Typewriter from "typewriter-effect";
 import Input from "../components/input/TextInput";
 import Button from "../components/button/Button";
 import { Toast } from "../components/toast/Toast";
-
 import { btnBasicStyle, btnStyle, textInputStyle } from "../constants";
+
 import { HiOutlineXMark } from "react-icons/hi2";
 import { fetchAdminLogin } from "../api/user";
-import { useRecoilState } from "recoil";
-import { AccessTokenState } from "../recoil/login";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ accessToken, setAccessToken }) => {
   const navigate = useNavigate();
-
-  const [accessToken, setAccessToken] = useRecoilState(AccessTokenState);
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
 
@@ -29,7 +26,6 @@ const Login = () => {
       Toast("로그인을 실패하였습니다.");
     }
   };
-  console.log(accessToken);
 
   return (
     <div className="w-full md:h-[100vh] bg-black md:flex">

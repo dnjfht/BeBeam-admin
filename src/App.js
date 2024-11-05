@@ -34,10 +34,10 @@ function App() {
     {
       path: "/",
       element:
-        accessToken === "" ? (
-          <Login />
+        accessToken === null || accessToken === "invalid password" ? (
+          <Login accessToken={accessToken} setAccessToken={setAccessToken} />
         ) : (
-          <Root accessToken={accessToken} setAccessToken={setAccessToken} />
+          <Root setAccessToken={setAccessToken} />
         ),
       errorElement: <NotFoundPage />,
       children: [

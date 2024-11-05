@@ -171,6 +171,7 @@ const MeetingDetailModal = ({
 
   const totalPages = meetingParticipantDatas?.pageInfo?.totalPages ?? 1;
   console.log(data, meetingParticipantDatas?.participants, totalPages);
+  console.log(data?.state);
 
   return (
     <BasicModal
@@ -199,7 +200,7 @@ const MeetingDetailModal = ({
         tabList={[
           "모임 상세정보",
           data?.state === "모집중" ? "신청자 리스트" : "참여자 리스트",
-          data?.state === "모집중" ? null : "리뷰 리스트",
+          "리뷰 리스트",
         ]}
         tab={tabCount}
         setTab={setTabCount}
@@ -278,7 +279,9 @@ const MeetingDetailModal = ({
           <MeetingSmallContentWrap styles="mt-4" subTitle="안내사항">
             <div className="mt-1 px-3 py-2 box-border border-[1px] border-solid border-[#8d8d8d] rounded-md">
               {data?.info?.map((i, index) => (
-                <p key={index}>- {i}</p>
+                <p key={index} className="mb-2">
+                  - {i}
+                </p>
               ))}
             </div>
           </MeetingSmallContentWrap>
@@ -329,10 +332,7 @@ const MeetingDetailModal = ({
           </Table>
         </TabContent>
 
-        <TabContent
-          value="3"
-          styles={{ display: data?.state === "모집중" ? "none" : "" }}
-        ></TabContent>
+        <TabContent value="3"></TabContent>
       </BasicTab2>
     </BasicModal>
   );

@@ -53,7 +53,7 @@ export default function MeetingSmallContentWrap({
         <p
           className={`${
             dropDown && des ? "pt-2 h-auto" : "h-0"
-          } overflow-hidden transition-all duration-700`}
+          } overflow-hidden transition-all duration-700 whitespace-pre-line`}
         >
           {des}
         </p>

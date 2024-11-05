@@ -1,17 +1,17 @@
 import { useState } from "react";
-
-import CreateMeetingModal from "../../components/modal/contents/meeting/CreateMeetModal";
-import Table from "../../components/table/Table";
-import { Menu, MenuItem } from "@mui/material";
-import MeetingModal from "../../components/modal/contents/meeting/MeetingDetailModal";
-import { currentDateFormat2, handleMeetingNameClick } from "../../common";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AccessTokenState } from "../../recoil/login";
 import { useRecoilValue } from "recoil";
+import CreateMeetingModal from "../../components/modal/contents/meeting/CreateMeetModal";
+import Table from "../../components/table/Table";
+import MeetingModal from "../../components/modal/contents/meeting/MeetingDetailModal";
+import { currentDateFormat2, handleMeetingNameClick } from "../../common";
 import { allMeetingDataFetch, deleteMeetingDataFetch } from "../../api/meeting";
+
 import BasicMenu from "../../components/menu/BasicMenu";
 import { Toast } from "../../components/toast/Toast";
 import Button from "../../components/button/Button";
+
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi2";
 import { btnBasicStyle } from "../../constants";
 
@@ -20,9 +20,9 @@ export default function CreateRegMeetings() {
   const accessToken = useRecoilValue(AccessTokenState);
 
   const [open, setOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState(1);
 
   const { data: datas } = useQuery({
