@@ -1,187 +1,153 @@
-import React, { useState } from "react";
-import { DataGrid } from "@mui/x-data-grid";
-import Paper from "@mui/material/Paper";
-import MeetingModal from "../../components/modal/contents/meeting/MeetingDetailModal";
-import { Menu, MenuItem, Button } from "@mui/material";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getDeleteMeetingDataFetch } from "../../api/meeting";
+import { currentDateFormat2, handleMeetingNameClick } from "../../common";
+import MeetingDetailModal from "../../components/modal/contents/meeting/MeetingDetailModal";
+import Button from "../../components/button/Button";
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi2";
+import { btnBasicStyle } from "../../constants";
+import BasicMenu from "../../components/menu/BasicMenu";
+import Table from "../../components/table/Table";
 
-const deletedMeetingData = [
-  {
-    id: 1,
-    hostNickname: "유형1",
-    meetingName: "지난 팀 회의",
-    location: "서울시 강남구",
-    recruitmentStatus: "삭제됨",
-    startDate: "2024.01.01",
-    endDate: "2024.01.31",
-    participantCount: 15,
-    notes: "삭제된 모임입니다",
-  },
-  {
-    id: 2,
-    hostNickname: "유형2",
-    meetingName: "지난 리뷰 미팅",
-    location: "부산시 해운대구",
-    recruitmentStatus: "삭제됨",
-    startDate: "2024.02.01",
-    endDate: "2024.02.15",
-    participantCount: 20,
-    notes: "삭제된 모임입니다",
-  },
-  {
-    id: 3,
-    hostNickname: "유형3",
-    meetingName: "지난 워크숍",
-    location: "대구시 수성구",
-    recruitmentStatus: "삭제됨",
-    startDate: "2024.06.01",
-    endDate: "2024.06.30",
-    participantCount: 25,
-    notes: "삭제된 모임입니다",
-  },
-  {
-    id: 4,
-    hostNickname: "유형4",
-    meetingName: "지난 컨퍼런스",
-    location: "인천시 남구",
-    recruitmentStatus: "삭제됨",
-    startDate: "2024.09.01",
-    endDate: "2024.09.10",
-    participantCount: 30,
-    notes: "삭제된 모임입니다",
-  },
-];
-
-function Table({
-  columns,
-  datas,
-  ischeckbox,
-  selectedIdList,
-  setSelectedIdList,
-  onRowClick,
-}) {
-  const paginationModel = { page: 0, pageSize: 10 };
-
-  return (
-    <Paper sx={{ height: "78vh", width: "100%", position: "relative" }}>
-      <DataGrid
-        rows={datas}
-        columns={columns}
-        getRowHeight={() => "auto"}
-        initialState={{ pagination: { paginationModel } }}
-        pageSizeOptions={[5, 10]}
-        sx={{
-          border: 0,
-          "&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell": {
-            display: "flex",
-            alignItems: "center",
-            paddingY: 1,
-          },
-        }}
-        checkboxSelection={ischeckbox}
-        disableRowSelectionOnClick
-        rowSelectionModel={selectedIdList}
-        onRowSelectionModelChange={(newRowSelectionModel) => {
-          setSelectedIdList(newRowSelectionModel);
-        }}
-        onRowClick={onRowClick}
-      />
-    </Paper>
-  );
-}
-
-// 삭제된 모임 리스트 컴포넌트
-export default function DeleteMeetings() {
-  const [selectedIdList, setSelectedIdList] = useState([]);
+export default function DeleteMeetings({ accessToken }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedMeeting, setSelectedMeeting] = useState(null);
+  const [selectedId, setSelectedId] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
-  const [data, setData] = useState(deletedMeetingData);
-  const isCheckboxEnabled = true;
+  const [page, setPage] = useState(1);
+
+  const { data: datas } = useQuery({
+    queryKey: ["deleteMeetingDatas", accessToken, page],
+    queryFn: async () => {
+      const result = await getDeleteMeetingDataFetch(accessToken, page);
+      return result;
+    },
+  });
 
   const columns = [
-    { field: "id", headerName: "ID", width: 90 },
-    { field: "hostNickname", headerName: "호스트 닉네임", width: 150 },
+    { field: "id", headerName: "ID", width: 50 },
     {
-      field: "meetingName",
+      field: "thumbnailImage",
+      headerName: "썸네일 이미지",
+      width: 70,
+      sortable: false,
+      renderCell: (params) => (
+        <img
+          src={params.row["thumbnailImage"]}
+          alt="thumbnailImage"
+          style={{
+            width: 50,
+            height: 50,
+            objectFit: "cover",
+            borderRadius: "10px",
+            border: "1px solid #8d8d8d",
+          }}
+        />
+      ),
+    },
+    {
+      field: "name",
       headerName: "모임명",
       width: 200,
       renderCell: (params) => (
         <span
-          onClick={(event) => handleMenuClick(event, params.row)}
+          onClick={(e) =>
+            handleMeetingNameClick(e, params.row, setAnchorEl, setSelectedId)
+          }
           style={{ cursor: "pointer" }}
         >
           {params.value}
         </span>
       ),
     },
+    { field: "recruitmentType", headerName: "모임 형태", width: 90 },
+    { field: "recruitmentStatus", headerName: "모임 상태", width: 90 },
+    { field: "selectionType", headerName: "선발 형태", width: 90 },
     { field: "location", headerName: "개최 장소", width: 150 },
-    { field: "recruitmentStatus", headerName: "상태", width: 120 },
-    { field: "startDate", headerName: "모임 시작일", width: 150 },
-    { field: "endDate", headerName: "모임 종료일", width: 150 },
-    { field: "participantCount", headerName: "모집 인원 수", width: 150 },
-    { field: "notes", headerName: "비고", width: 200 },
+    {
+      field: "meetingDatetime",
+      headerName: "모집 마감일",
+      width: 120,
+      renderCell: (params) => (
+        <p>{currentDateFormat2(params.row["meetingDatetime"])}</p>
+      ),
+    },
+    { field: "minParticipants", headerName: "최소 모집인원", width: 90 },
+    { field: "maxParticipants", headerName: "최대 모집인원", width: 90 },
+    { field: "participantCount", headerName: "수락된 인원", width: 90 },
+    { field: "paymentAmount", headerName: "참가비", width: 120 },
   ];
 
-  const handleMenuClick = (event, row) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedMeeting(row);
-  };
-
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
-
-  const handleOpenDetails = () => {
-    setIsModalOpen(true);
-    handleCloseMenu();
-  };
-
-  const handleDeleteSelected = () => {
-    setData((prevData) =>
-      prevData.filter((item) => !selectedIdList.includes(item.id))
-    );
-    setSelectedIdList([]); // 선택된 목록 초기화
-  };
+  const menuDatas = [
+    {
+      text: "모임 상세 정보",
+      onClick: () => {
+        setIsModalOpen(true);
+        setAnchorEl(null);
+      },
+    },
+    {
+      text: "모임 복구",
+      onClick: () => {},
+    },
+    {
+      text: "취소",
+      onClick: () => {
+        setAnchorEl(null);
+      },
+    },
+  ];
+  const filterMenuDatas = isModalOpen ? menuDatas.slice(1) : menuDatas;
+  const totalPages = datas?.pageInfo?.totalPages;
 
   return (
     <div>
-      <div className="button-group">
-        <button className="button" onClick={() => {}}>
-          삭제된 모임 리스트
-        </button>
-      </div>
+      <h1 className="mb-4 text-[1.5rem] font-bold">삭제된 모임 리스트</h1>
 
-      <div>
-        <h1>삭제된 모임 리스트</h1>
-        <Table
-          columns={columns}
-          datas={data}
-          ischeckbox={isCheckboxEnabled}
-          selectedIdList={selectedIdList}
-          setSelectedIdList={setSelectedIdList}
+      <Table columns={columns} datas={datas?.meetings} height="80vh">
+        <BasicMenu
+          anchorEl={anchorEl}
+          setAnchorEl={setAnchorEl}
+          menuDatas={filterMenuDatas}
         />
-      </div>
-      <Button
-        variant="contained"
-        color="outlined"
-        onClick={handleDeleteSelected}
-        disabled={selectedIdList.length === 0}
-        style={{ marginTop: "10px" }}
-      >
-        선택한 항목 삭제
-      </Button>
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleCloseMenu}
-      >
-        <MenuItem onClick={handleOpenDetails}>모임 상세</MenuItem>
-        <MenuItem onClick={handleCloseMenu}>취소</MenuItem>
-      </Menu>
-      <MeetingModal
+
+        <p className="absolute left-3 bottom-[14px]">
+          {page}/{totalPages} pages
+        </p>
+
+        <div className="absolute bottom-[10px] right-3 text-[1.4rem] flex items-center gap-x-2">
+          <Button
+            icon={<HiChevronLeft />}
+            onClick={() => {
+              if (page > 1) {
+                setPage((prev) => prev - 1);
+              }
+            }}
+            basicStyles={btnBasicStyle.basic}
+            styles="p-1 rounded-lg"
+            disabled={page === 1}
+            enableStyles="bg-[#282828] text-white"
+          />
+          <Button
+            icon={<HiChevronRight />}
+            onClick={() => {
+              if (totalPages > page) {
+                setPage((prev) => prev + 1);
+              }
+            }}
+            basicStyles={btnBasicStyle.basic}
+            styles="p-1 rounded-lg"
+            disabled={page >= totalPages}
+            enableStyles="bg-[#282828] text-white"
+          />
+        </div>
+      </Table>
+
+      <MeetingDetailModal
+        accessToken={accessToken}
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        meeting={selectedMeeting}
+        setIsModalOpen={setIsModalOpen}
+        selectedId={selectedId}
+        setAnchorEl={setAnchorEl}
       />
     </div>
   );

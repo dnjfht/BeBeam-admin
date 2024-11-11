@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { allMeetingDataFetch, deleteMeetingDataFetch } from "../../api/meeting";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { SelectedIdState } from "../../recoil/user";
-import { AccessTokenState } from "../../recoil/login";
 import { currentDateFormat2, handleMeetingNameClick } from "../../common";
 
 import Table from "../../components/table/Table";
@@ -16,9 +13,8 @@ import BasicSelect from "../../components/select/BasicSelect";
 
 import { HiChevronRight, HiChevronLeft } from "react-icons/hi2";
 
-export default function Meetings() {
+export default function Meetings({ accessToken }) {
   const queryClient = useQueryClient();
-  const accessToken = useRecoilValue(AccessTokenState);
 
   const [filter, setFilter] = useState({
     search: "",
@@ -26,7 +22,7 @@ export default function Meetings() {
     type: "all",
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedId, setSelectedId] = useRecoilState(SelectedIdState);
+  const [selectedId, setSelectedId] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const [page, setPage] = useState(1);
 

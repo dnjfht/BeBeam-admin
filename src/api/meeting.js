@@ -57,6 +57,27 @@ export const detailDataFetch = async (detailUrl) => {
   }
 };
 
+// 특정 모임 상세정보 받아오기
+export const getSpecificMeetingDetailDataFetch = async (
+  accessToken,
+  meetingId
+) => {
+  try {
+    const res = await axios({
+      method: "get",
+      url: `https://prod.be-beam.site/api/admin-x8kp62iw/v1/meetings/${meetingId}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return res.data.result;
+  } catch (error) {
+    console.error("Error getting specific meeting detail data:", error);
+    throw error;
+  }
+};
+
 // 정기모임 삭제
 export const deleteMeetingDataFetch = async (accessToken, meetingId) => {
   try {
@@ -219,6 +240,92 @@ export const acceptOrRejectMeetingParticipantsFetch = async (
       } Meeting Participants Data Fetch:`,
       error
     );
+    throw error;
+  }
+};
+
+// 전체 리뷰 보기
+export const allMeetingReviewDataFetch = async (
+  accessToken,
+  page,
+  sizeNum = 10,
+  filter
+) => {
+  try {
+    const res = await axios({
+      method: "get",
+      url: `https://prod.be-beam.site/api/web/v1/meetings?page=${page}&size=${sizeNum}&search=${filter.search}&status=${filter.status}&type=${filter.type}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return res.data.result;
+  } catch (error) {
+    console.error("Error fetching All Meeting Data Fetch:", error);
+    throw error;
+  }
+};
+
+// 특정 모임 리뷰 보기
+export const meetingReviewDataFetch = async (
+  accessToken,
+  selectedId,
+  page,
+  sizeNum = 10,
+  filter
+) => {
+  try {
+    const res = await axios({
+      method: "get",
+      url: `https://prod.be-beam.site/api/web/v1/meetings/${selectedId}/reviews?search=${filter.search}&sort=${filter.sort}&type=${filter.type}&page=${page}&size=${sizeNum}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return res.data.result;
+  } catch (error) {
+    console.error("Error importing certain meeting review data:", error);
+    throw error;
+  }
+};
+
+// 특정 모임 리뷰 삭제하기
+export const deleteMeetingReviewDataFetch = async (accessToken, reviewId) => {
+  try {
+    const res = await axios({
+      method: "delete",
+      url: `https://prod.be-beam.site/api/admin-x8kp62iw/v1/reviews/${reviewId}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+  } catch (error) {
+    console.error("Error deleting a specific review:", error);
+    throw error;
+  }
+};
+
+// 삭제한 모임 보기
+export const getDeleteMeetingDataFetch = async (
+  accessToken,
+  page,
+  sizeNum = 10
+) => {
+  try {
+    const res = await axios({
+      method: "get",
+      url: `https://prod.be-beam.site/api/admin-x8kp62iw/v1/meetings?page=${page}&size=${sizeNum}&status=inactive`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return res.data.result;
+  } catch (error) {
+    console.error("Error fetching Delete Meeting Review Data Fetch:", error);
     throw error;
   }
 };

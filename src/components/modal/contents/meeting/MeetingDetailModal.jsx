@@ -2,10 +2,16 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   acceptOrRejectMeetingParticipantsFetch,
-  detailDataFetch,
+  deleteMeetingReviewDataFetch,
+  getSpecificMeetingDetailDataFetch,
   meetingParticipantsFetch,
+  meetingReviewDataFetch,
 } from "../../../../api/meeting";
-import { currentDateFormat2, handleConsoleError } from "../../../../common";
+import {
+  currentDateFormat2,
+  formatTimeAgo,
+  handleConsoleError,
+} from "../../../../common";
 
 import BasicModal from "../../BasicModal";
 import BasicTab2 from "../../../tab/BasicTab2";
@@ -37,11 +43,15 @@ const MeetingDetailModal = ({
   const [tabCount, setTabCount] = useState("1");
   const [participantsState, setParticipantsState] = useState("");
   const [page, setPage] = useState(1);
+  const [changeIdReivewDatas, setChangeIdReviewDatas] = useState([]);
 
   const { isLoading, error, data } = useQuery({
     queryKey: ["meetingDetailDatas", isOpen],
     queryFn: async () => {
-      const result = await detailDataFetch(`meetings/${selectedId}`);
+      const result = await getSpecificMeetingDetailDataFetch(
+        accessToken,
+        selectedId
+      );
       return result;
     },
   });
@@ -62,6 +72,20 @@ const MeetingDetailModal = ({
         selectedId,
         participantsState,
         page
+      );
+      return result;
+    },
+  });
+
+  const { data: meetingReviewDatas } = useQuery({
+    queryKey: ["meetingReviewDatas", isOpen],
+    queryFn: async () => {
+      const result = await meetingReviewDataFetch(
+        accessToken,
+        selectedId,
+        page,
+        10,
+        { search: "", sort: "recent", type: "text" }
       );
       return result;
     },
@@ -93,8 +117,16 @@ const MeetingDetailModal = ({
       ]);
     },
   });
+  const deleteDeleteSpecificMeetingReviewMutation = useMutation({
+    mutationFn: (reviewId) =>
+      deleteMeetingReviewDataFetch(accessToken, reviewId),
+    onSuccess: () => {
+      Toast("리뷰를 삭제하였습니다.");
+      return queryClient.invalidateQueries(["meetingReviewDatas", isOpen]);
+    },
+  });
 
-  const columns = [
+  const participantsColumns = [
     { field: "id", headerName: "ID", width: 50 },
     {
       field: "profileImage",
@@ -104,7 +136,7 @@ const MeetingDetailModal = ({
       renderCell: (params) => (
         <img
           src={params.row["profileImage"]}
-          alt="thumbnailImage"
+          alt="profileImage"
           style={{
             width: 50,
             height: 50,
@@ -125,7 +157,7 @@ const MeetingDetailModal = ({
     {
       field: "actions",
       headerName: "수락/거절",
-      width: 90,
+      width: 120,
       sortable: false,
       renderCell: (params) =>
         data?.state === "모집중" ? (
@@ -168,10 +200,114 @@ const MeetingDetailModal = ({
         ),
     },
   ];
+  const reviewColumns = [
+    { field: "reviewId", headerName: "ID", width: 50 },
+    {
+      field: "createdAt",
+      headerName: "작성일",
+      width: 90,
+      renderCell: (params) => <p>{formatTimeAgo(params.row["createdAt"])}</p>,
+    },
+    {
+      field: "profileImg",
+      headerName: "프로필 이미지",
+      width: 70,
+      sortable: false,
+      renderCell: (params) => (
+        <img
+          src={params.row["profileImg"]}
+          alt="profileImage"
+          style={{
+            width: 50,
+            height: 50,
+            objectFit: "cover",
+            borderRadius: "100%",
+            border: "1px solid #8d8d8d",
+          }}
+        />
+      ),
+    },
+    { field: "nickname", headerName: "닉네임", width: 90 },
+    { field: "rating", headerName: "별점", width: 70 },
+    { field: "text", headerName: "리뷰", width: 120 },
+    {
+      field: "images",
+      headerName: "리뷰 이미지",
+      width: 120,
+      renderCell: (params) => (
+        <div>
+          {params.row["images"].map((img) => (
+            <img
+              src={img}
+              alt="reviewImages"
+              style={{
+                width: 50,
+                height: 50,
+                marginBottom: 4,
+                objectFit: "cover",
+                border: "1px solid #8d8d8d",
+                borderRadius: "10px",
+              }}
+            />
+          ))}
+        </div>
+      ),
+    },
+    { field: "likesCount", headerName: "좋아요수", width: 70 },
+    {
+      field: "actions",
+      headerName: "삭제",
+      width: 120,
+      sortable: false,
+      renderCell: (params) => (
+        <Button
+          text="삭제하기"
+          basicStyles={btnBasicStyle["black-bg"]}
+          onClick={() => {
+            if (window.confirm("정말 리뷰를 삭제하시겠습니까?")) {
+              try {
+                deleteDeleteSpecificMeetingReviewMutation.mutate(
+                  params.row["id"]
+                );
+              } catch (error) {
+                Toast("리뷰를 삭제하지 못하였습니다.");
+              }
+            }
+          }}
+          styles="px-4 py-2 rounded-lg"
+        />
+      ),
+    },
+  ];
 
-  const totalPages = meetingParticipantDatas?.pageInfo?.totalPages ?? 1;
-  console.log(data, meetingParticipantDatas?.participants, totalPages);
-  console.log(data?.state);
+  useEffect(() => {
+    if (meetingReviewDatas?.reviews) {
+      setChangeIdReviewDatas(
+        meetingReviewDatas?.reviews?.map((review) => ({
+          id: review?.reviewId,
+          ...review,
+        }))
+      );
+    }
+  }, [meetingReviewDatas]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setTabCount("1");
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (tabCount) {
+      setPage(1);
+    }
+  }, [tabCount]);
+
+  const participantsTotalPages =
+    meetingParticipantDatas?.pageInfo?.totalPages ?? 1;
+  const reviewsTotalPages = meetingReviewDatas?.pageInfo?.totalPages ?? 1;
+
+  console.log("meetingReviewDatas", meetingReviewDatas);
 
   return (
     <BasicModal
@@ -295,12 +431,12 @@ const MeetingDetailModal = ({
 
         <TabContent value="2">
           <Table
-            columns={columns}
+            columns={participantsColumns}
             datas={meetingParticipantDatas?.participants}
             height="60vh"
           >
             <p className="absolute left-3 bottom-[14px]">
-              {page}/{totalPages} pages
+              {page}/{participantsTotalPages} pages
             </p>
 
             <div className="absolute bottom-[10px] right-3 text-[1.4rem] flex items-center gap-x-2">
@@ -319,20 +455,57 @@ const MeetingDetailModal = ({
               <Button
                 icon={<HiChevronRight />}
                 onClick={() => {
-                  if (totalPages > page) {
+                  if (participantsTotalPages > page) {
                     setPage((prev) => prev + 1);
                   }
                 }}
                 basicStyles={btnBasicStyle.basic}
                 styles="p-1 rounded-lg"
-                disabled={page >= totalPages}
+                disabled={page >= participantsTotalPages}
                 enableStyles="bg-[#282828] text-white"
               />
             </div>
           </Table>
         </TabContent>
 
-        <TabContent value="3"></TabContent>
+        <TabContent value="3">
+          <Table
+            columns={reviewColumns}
+            datas={changeIdReivewDatas}
+            height="60vh"
+          >
+            <p className="absolute left-3 bottom-[14px]">
+              {page}/{reviewsTotalPages} pages
+            </p>
+
+            <div className="absolute bottom-[10px] right-3 text-[1.4rem] flex items-center gap-x-2">
+              <Button
+                icon={<HiChevronLeft />}
+                onClick={() => {
+                  if (page > 1) {
+                    setPage((prev) => prev - 1);
+                  }
+                }}
+                basicStyles={btnBasicStyle.basic}
+                styles="p-1 rounded-lg"
+                disabled={page === 1}
+                enableStyles="bg-[#282828] text-white"
+              />
+              <Button
+                icon={<HiChevronRight />}
+                onClick={() => {
+                  if (reviewsTotalPages > page) {
+                    setPage((prev) => prev + 1);
+                  }
+                }}
+                basicStyles={btnBasicStyle.basic}
+                styles="p-1 rounded-lg"
+                disabled={page >= reviewsTotalPages}
+                enableStyles="bg-[#282828] text-white"
+              />
+            </div>
+          </Table>
+        </TabContent>
       </BasicTab2>
     </BasicModal>
   );

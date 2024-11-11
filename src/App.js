@@ -68,7 +68,7 @@ function App() {
         },
         {
           path: "/meetings",
-          element: <Meetings />,
+          element: <Meetings accessToken={accessToken} />,
         },
         {
           path: "/createRegMeetings",
@@ -76,7 +76,7 @@ function App() {
         },
         {
           path: "/deleteMeetings",
-          element: <DeleteMeetings />,
+          element: <DeleteMeetings accessToken={accessToken} />,
         },
         {
           path: "/comments",
