@@ -21,7 +21,7 @@ export const handleNicknameClick = (
   isUsers = true
 ) => {
   setAnchorEl(e.currentTarget);
-  setSelectedNickname(row.닉네임);
+  setSelectedNickname(row.nickname);
 
   if (isUsers) {
     setSelectedId(row.id);

@@ -16,11 +16,8 @@ const style = {
 };
 
 export default function UserForcedResignReasonModal({
-  setIsForcedResign,
   isForcedResign,
   selectedNickname,
-  selectedId,
-  setUsers,
 }) {
   const [forcedResignReason, setForcedResignReason] =
     useState("강제 탈퇴 사유 선택");
@@ -74,21 +71,22 @@ export default function UserForcedResignReasonModal({
               styles="w-full mt-2 py-4 rounded-md border-t-[1px] border-[#d0d0d0]"
               disabled={forcedResignReason === "강제 탈퇴 사유 선택"}
               onClick={() => {
-                setUsers((prev) =>
-                  prev.map((user) => {
-                    if (user.id === selectedId) {
-                      return {
-                        ...user,
-                        "강제탈퇴 사유": forcedResignReason,
-                      };
-                    } else {
-                      return user;
-                    }
-                  })
-                );
-                alert("제출되었습니다!");
-                setIsForcedResign(false);
-                setForcedResignReason("강제 탈퇴 사유 선택");
+                // 강제 탈퇴 기능 아직 없심
+                // setUsers((prev) =>
+                //   prev.map((user) => {
+                //     if (user.id === selectedId) {
+                //       return {
+                //         ...user,
+                //         "강제탈퇴 사유": forcedResignReason,
+                //       };
+                //     } else {
+                //       return user;
+                //     }
+                //   })
+                // );
+                // alert("제출되었습니다!");
+                // setIsForcedResign(false);
+                // setForcedResignReason("강제 탈퇴 사유 선택");
               }}
             />
           </div>

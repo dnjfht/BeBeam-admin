@@ -15,7 +15,7 @@ export const getAllUsersDataFetch = async (
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    return res.data;
+    return res.data.result;
   } catch (error) {
     console.error("Error fetching All Users Data Fetch:", error);
     throw error;

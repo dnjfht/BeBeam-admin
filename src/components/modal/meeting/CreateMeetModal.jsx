@@ -1,19 +1,19 @@
 import { useState } from "react";
 import { TextField, Modal, Input } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createRegularMeeting } from "../../../../api/meeting";
+import { createRegularMeeting } from "../../../api/meeting";
 import Postcode from "react-daum-postcode";
 
-import BasicModal from "../../BasicModal";
+import BasicModal from "../BasicModal";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
-import { Toast } from "../../../toast/Toast";
+import { Toast } from "../../toast/Toast";
 
 import { BsXLg } from "react-icons/bs";
 
 export default function CreateMeetingModal({
   accessToken,
-  open,
-  setOpen,
+  isModalOpen,
+  setIsModalOpen,
   page,
 }) {
   const queryClient = useQueryClient();
@@ -198,7 +198,7 @@ export default function CreateMeetingModal({
       Toast("모임 생성을 실패하였습니다.");
     }
 
-    setOpen(false);
+    setIsModalOpen(false);
   };
 
   const thumbnail =
@@ -224,7 +224,11 @@ export default function CreateMeetingModal({
     );
 
   return (
-    <BasicModal isModalOpen={open} setIsModalOpen={setOpen} isMoreMenu={false}>
+    <BasicModal
+      isModalOpen={isModalOpen}
+      setIsModalOpen={setIsModalOpen}
+      isMoreMenu={false}
+    >
       <div className="w-full mb-5 pb-6 border-b-[1px] border-solid border-[#afafaf] flex items-center gap-x-3">
         <Input
           accept="image/*"

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Button from "../../components/button/Button";
+import Button from "../button/Button";
 
 import { GoChevronUp, GoChevronDown } from "react-icons/go";
 

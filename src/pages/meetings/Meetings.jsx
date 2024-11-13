@@ -6,10 +6,10 @@ import { currentDateFormat2, handleMeetingNameClick } from "../../common";
 import Table from "../../components/table/Table";
 import Button from "../../components/button/Button";
 import BasicMenu from "../../components/menu/BasicMenu";
-import MeetingDetailModal from "../../components/modal/contents/meeting/MeetingDetailModal";
 import { btnBasicStyle } from "../../constants";
 import { Toast } from "../../components/toast/Toast";
 import BasicSelect from "../../components/select/BasicSelect";
+import MeetingDetailModal from "../../components/modal/meeting/MeetingDetailModal";
 
 import { HiChevronRight, HiChevronLeft } from "react-icons/hi2";
 
@@ -88,33 +88,11 @@ export default function Meetings({ accessToken }) {
     { field: "paymentAmount", headerName: "참가비", width: 120 },
   ];
 
-  const deleteMeetingMutation = useMutation({
-    mutationFn: () => deleteMeetingDataFetch(accessToken, selectedId),
-    onSuccess: () => {
-      Toast("모임을 삭제하였습니다.");
-      return queryClient.invalidateQueries(["meetingDatas", page]);
-    },
-  });
-
   const menuDatas = [
     {
       text: "모임 상세 정보",
       onClick: () => {
         setIsModalOpen(true);
-        setAnchorEl(null);
-      },
-    },
-    {
-      text: "모임 삭제",
-      onClick: () => {
-        if (window.confirm("정말 삭제하시겠습니까?")) {
-          try {
-            deleteMeetingMutation.mutate();
-          } catch (error) {
-            Toast("모임 삭제를 실패하였습니다.");
-          }
-        }
-
         setAnchorEl(null);
       },
     },
@@ -127,6 +105,14 @@ export default function Meetings({ accessToken }) {
   ];
   const filterMenuDatas = isModalOpen ? menuDatas.slice(1) : menuDatas;
   const totalPages = datas?.pageInfo?.totalPages;
+
+  const deleteMeetingMutation = useMutation({
+    mutationFn: () => deleteMeetingDataFetch(accessToken, selectedId),
+    onSuccess: () => {
+      Toast("모임을 삭제하였습니다.");
+      return queryClient.invalidateQueries(["meetingDatas", page]);
+    },
+  });
 
   return (
     <div>
@@ -205,7 +191,7 @@ export default function Meetings({ accessToken }) {
 
       <MeetingDetailModal
         accessToken={accessToken}
-        isOpen={isModalOpen}
+        isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         selectedId={selectedId}
         setAnchorEl={setAnchorEl}

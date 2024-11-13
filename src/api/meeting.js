@@ -244,8 +244,8 @@ export const acceptOrRejectMeetingParticipantsFetch = async (
   }
 };
 
-// 전체 리뷰 보기
-export const allMeetingReviewDataFetch = async (
+// 전체 리뷰 가져오기
+export const allMeetingReviewDatasFetch = async (
   accessToken,
   page,
   sizeNum = 10,
@@ -254,7 +254,7 @@ export const allMeetingReviewDataFetch = async (
   try {
     const res = await axios({
       method: "get",
-      url: `https://prod.be-beam.site/api/web/v1/meetings?page=${page}&size=${sizeNum}&search=${filter.search}&status=${filter.status}&type=${filter.type}`,
+      url: `https://prod.be-beam.site/api/admin-x8kp62iw/v1/reviews?search=${filter.search}&sort=${filter.sort}&type=${filter.type}&recruitmentType=${filter.recruitmentType}&page=${page}&size=${sizeNum}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
@@ -262,12 +262,12 @@ export const allMeetingReviewDataFetch = async (
     });
     return res.data.result;
   } catch (error) {
-    console.error("Error fetching All Meeting Data Fetch:", error);
+    console.error("Error importing all meeting review data:", error);
     throw error;
   }
 };
 
-// 특정 모임 리뷰 보기
+// 특정 모임 리뷰 가져오기
 export const meetingReviewDataFetch = async (
   accessToken,
   selectedId,
@@ -308,7 +308,29 @@ export const deleteMeetingReviewDataFetch = async (accessToken, reviewId) => {
   }
 };
 
-// 삭제한 모임 보기
+// 삭제한 모임 리뷰 가져오기
+export const getDeleteMeetingReviewDatasFetch = async (
+  accessToken,
+  page,
+  sizeNum = 10
+) => {
+  try {
+    const res = await axios({
+      method: "get",
+      url: `https://prod.be-beam.site/api/admin-x8kp62iw/v1/reviews/delete?page=${page}&size=${sizeNum}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return res.data.result;
+  } catch (error) {
+    console.error("Error importing deleted meeting review data:", error);
+    throw error;
+  }
+};
+
+// 삭제한 모임 가져오기
 export const getDeleteMeetingDataFetch = async (
   accessToken,
   page,

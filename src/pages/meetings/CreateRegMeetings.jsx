@@ -1,26 +1,27 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AccessTokenState } from "../../recoil/login";
-import { useRecoilValue } from "recoil";
-import CreateMeetingModal from "../../components/modal/contents/meeting/CreateMeetModal";
-import Table from "../../components/table/Table";
-import MeetingModal from "../../components/modal/contents/meeting/MeetingDetailModal";
 import { currentDateFormat2, handleMeetingNameClick } from "../../common";
 import { allMeetingDataFetch, deleteMeetingDataFetch } from "../../api/meeting";
 
+import Table from "../../components/table/Table";
 import BasicMenu from "../../components/menu/BasicMenu";
 import { Toast } from "../../components/toast/Toast";
 import Button from "../../components/button/Button";
+import { btnBasicStyle } from "../../constants";
+import MeetingModal from "../../components/modal/meeting/MeetingDetailModal";
+import CreateMeetingModal from "../../components/modal/meeting/CreateMeetModal";
+import EditMeetingDetailsModal from "../../components/modal/meeting/EditMeetingDetailsModal";
 
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi2";
-import { btnBasicStyle } from "../../constants";
 
-export default function CreateRegMeetings() {
+export default function CreateRegMeetings({ accessToken }) {
   const queryClient = useQueryClient();
-  const accessToken = useRecoilValue(AccessTokenState);
 
   const [open, setOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMeetingDetailsModalOpen, setIsMeetingDetailsModalOpen] =
+    useState(false);
+  const [isEditMeetingDetailsModalOpen, setIsEditMeetingDetailsModalOpen] =
+    useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
   const [page, setPage] = useState(1);
@@ -91,19 +92,18 @@ export default function CreateRegMeetings() {
     { field: "paymentAmount", headerName: "참가비", width: 120 },
   ];
 
-  const deleteMeetingMutation = useMutation({
-    mutationFn: () => deleteMeetingDataFetch(accessToken, selectedId),
-    onSuccess: () => {
-      Toast("모임을 삭제하였습니다.");
-      return queryClient.invalidateQueries(["meetingDatas", page]);
-    },
-  });
-
   const menuDatas = [
     {
       text: "모임 상세 정보",
       onClick: () => {
-        setIsModalOpen(true);
+        setIsMeetingDetailsModalOpen(true);
+        setAnchorEl(null);
+      },
+    },
+    {
+      text: "모임 수정",
+      onClick: () => {
+        setIsEditMeetingDetailsModalOpen(true);
         setAnchorEl(null);
       },
     },
@@ -128,8 +128,18 @@ export default function CreateRegMeetings() {
       },
     },
   ];
-  const filterMenuDatas = isModalOpen ? menuDatas.slice(1) : menuDatas;
+  const filterMenuDatas = isMeetingDetailsModalOpen
+    ? menuDatas.slice(1)
+    : menuDatas;
   const totalPages = datas?.pageInfo?.totalPages;
+
+  const deleteMeetingMutation = useMutation({
+    mutationFn: () => deleteMeetingDataFetch(accessToken, selectedId),
+    onSuccess: () => {
+      Toast("모임을 삭제하였습니다.");
+      return queryClient.invalidateQueries(["meetingDatas", page]);
+    },
+  });
 
   return (
     <div>
@@ -142,13 +152,6 @@ export default function CreateRegMeetings() {
           정기모임 개설하기
         </button>
       </div>
-
-      <CreateMeetingModal
-        accessToken={accessToken}
-        open={open}
-        setOpen={setOpen}
-        page={page}
-      />
 
       <Table columns={columns} datas={datas?.meetings}>
         <BasicMenu
@@ -189,12 +192,24 @@ export default function CreateRegMeetings() {
         </div>
       </Table>
 
+      <CreateMeetingModal
+        accessToken={accessToken}
+        isModalOpen={open}
+        setIsModalOpen={setOpen}
+        page={page}
+      />
       <MeetingModal
         accessToken={accessToken}
-        isOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
+        isOpen={isMeetingDetailsModalOpen}
+        setIsModalOpen={setIsMeetingDetailsModalOpen}
         selectedId={selectedId}
         setAnchorEl={setAnchorEl}
+      />
+      <EditMeetingDetailsModal
+        accessToken={accessToken}
+        isModalOpen={isEditMeetingDetailsModalOpen}
+        setIsModalOpen={setIsEditMeetingDetailsModalOpen}
+        selectedId={selectedId}
       />
     </div>
   );

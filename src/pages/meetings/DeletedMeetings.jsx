@@ -2,18 +2,19 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getDeleteMeetingDataFetch } from "../../api/meeting";
 import { currentDateFormat2, handleMeetingNameClick } from "../../common";
-import MeetingDetailModal from "../../components/modal/contents/meeting/MeetingDetailModal";
+import MeetingDetailModal from "../../components/modal/meeting/MeetingDetailModal";
 import Button from "../../components/button/Button";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi2";
 import { btnBasicStyle } from "../../constants";
 import BasicMenu from "../../components/menu/BasicMenu";
 import Table from "../../components/table/Table";
 
-export default function DeleteMeetings({ accessToken }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState("");
+export default function DeletedMeetings({ accessToken }) {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedId, setSelectedId] = useState("");
+
   const [page, setPage] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data: datas } = useQuery({
     queryKey: ["deleteMeetingDatas", accessToken, page],
@@ -84,10 +85,6 @@ export default function DeleteMeetings({ accessToken }) {
         setIsModalOpen(true);
         setAnchorEl(null);
       },
-    },
-    {
-      text: "모임 복구",
-      onClick: () => {},
     },
     {
       text: "취소",

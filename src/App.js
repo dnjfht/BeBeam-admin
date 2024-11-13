@@ -12,14 +12,16 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Admins from "./pages/admin/Admins";
 import SignUpAndResignAdmins from "./pages/admin/SignUpAndResignAdmins";
-import Users from "./pages/user/Users";
-import SignUpAndResignUsers from "./pages/user/SignUpAndResignUsers";
-import ForceResignUsers from "./pages/user/ForceResignUsers";
+import Users from "./pages/users/Users";
+import SignUpAndResignUsers from "./pages/users/SignUpAndResignUsers";
+import ForceResignUsers from "./pages/users/ForceResignUsers";
 import Meetings from "./pages/meetings/Meetings";
 import CreateRegMeetings from "./pages/meetings/CreateRegMeetings";
-import DeleteMeetings from "./pages/meetings/DeleteMeetings";
-import Comments from "./pages/comment/Comments";
-import DeleteComments from "./pages/comment/DeleteComments";
+import DeleteMeetings from "./pages/meetings/DeletedMeetings";
+import ForceDeletedMeetings from "./pages/meetings/ForceDeletedMeetings";
+import MeetingReviews from "./pages/meetingReviews/MeetingReviews";
+import DeletedMeetingReviews from "./pages/meetingReviews/DeletedMeetingReviews";
+import ForceDeletedMeetingReviews from "./pages/meetingReviews/ForceDeletedMeetingReviews";
 import HashTags from "./pages/HashTags";
 
 function App() {
@@ -56,7 +58,7 @@ function App() {
         },
         {
           path: "/users",
-          element: <Users />,
+          element: <Users accessToken={accessToken} />,
         },
         {
           path: "/signUpAndResignUsers",
@@ -64,27 +66,35 @@ function App() {
         },
         {
           path: "/forceResignUsers",
-          element: <ForceResignUsers />,
+          element: <ForceResignUsers accessToken={accessToken} />,
         },
         {
           path: "/meetings",
           element: <Meetings accessToken={accessToken} />,
         },
         {
-          path: "/createRegMeetings",
-          element: <CreateRegMeetings />,
+          path: "/createAndEditRegMeetings",
+          element: <CreateRegMeetings accessToken={accessToken} />,
         },
         {
-          path: "/deleteMeetings",
+          path: "/deletedMeetings",
           element: <DeleteMeetings accessToken={accessToken} />,
         },
         {
-          path: "/comments",
-          element: <Comments />,
+          path: "/forceDeletedMeetings",
+          element: <ForceDeletedMeetings accessToken={accessToken} />,
         },
         {
-          path: "/deleteComments",
-          element: <DeleteComments />,
+          path: "/meetingReviews",
+          element: <MeetingReviews accessToken={accessToken} />,
+        },
+        {
+          path: "/deletedMeetingReviews",
+          element: <DeletedMeetingReviews accessToken={accessToken} />,
+        },
+        {
+          path: "/forceDeletedMeetingReviews",
+          element: <ForceDeletedMeetingReviews accessToken={accessToken} />,
         },
         {
           path: "/hashTags",

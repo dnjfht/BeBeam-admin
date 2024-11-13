@@ -1,24 +1,17 @@
-import { useRecoilState } from "recoil";
-import Table from "../../components/table/Table";
-import { IsModalOpenState } from "../../recoil/content";
-import {
-  AnchorElState,
-  SelectedIdState,
-  SelectedNicknameState,
-  UsersState,
-} from "../../recoil/user";
-import BasicMenu from "../../components/menu/BasicMenu";
-import UserModal from "../../components/modal/user/UserModal";
-import { currentDateFormat, handleNicknameClick } from "../../common";
+import { useState } from "react";
+import { handleNicknameClick } from "../../common";
 
-export default function ForceResignUsers() {
-  const [users, setUsers] = useRecoilState(UsersState);
-  const [anchorEl, setAnchorEl] = useRecoilState(AnchorElState);
-  const [selectedNickname, setSelectedNickname] = useRecoilState(
-    SelectedNicknameState
-  );
-  const [selectedId, setSelectedId] = useRecoilState(SelectedIdState);
-  const [isModalOpen, setIsModalOpen] = useRecoilState(IsModalOpenState);
+import Table from "../../components/table/Table";
+import UserMenu from "../../components/menu/user/UserMenu";
+import UserModal from "../../components/modal/users/UserModal";
+
+export default function SignUpAndResignUsers() {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedNickname, setSelectedNickname] = useState("");
+  const [selectedId, setSelectedId] = useState("");
+
+  const [users, setUsers] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns = [
     {
@@ -29,22 +22,22 @@ export default function ForceResignUsers() {
       renderCell: () => <span>***********</span>,
     },
     {
+      field: "가입/탈퇴",
+      headerName: "가입/탈퇴",
+      type: "string",
+      width: 90,
+    },
+    {
+      field: "회원가입 일자",
+      headerName: "회원가입 일자",
+      type: "string",
+      width: 140,
+    },
+    {
       field: "회원탈퇴 일자",
       headerName: "회원탈퇴 일자",
       type: "string",
       width: 140,
-    },
-    {
-      field: "강제탈퇴 사유",
-      headerName: "강제탈퇴 사유",
-      type: "string",
-      width: 140,
-    },
-    {
-      field: "재가입 가능 여부",
-      headerName: "재가입 가능 여부",
-      type: "string",
-      width: 90,
     },
     {
       field: "프로필 이미지",
@@ -151,62 +144,23 @@ export default function ForceResignUsers() {
     },
   ];
 
-  const filteredForceResignUsers = users.filter(
-    (user) => user.강제탈퇴 === true
-  );
-
-  const menuDatas = [
-    {
-      text: "회원 상세 정보",
-      onClick: () => {
-        setIsModalOpen(true);
-        setAnchorEl(null);
-      },
-    },
-    {
-      text: `${
-        filteredForceResignUsers.find((user) => user.id === selectedId)?.[
-          "재가입 가능 여부"
-        ] === "가능"
-          ? "재가입 불가능 처리"
-          : "재가입 가능 처리"
-      }`,
-      onClick: () => {
-        // 재가입 가능 여부 처리 로직 추가
-
-        setUsers((user) =>
-          user.map((u) => {
-            if (u.id === selectedId) {
-              return {
-                ...u,
-                "재가입 가능 여부":
-                  u["재가입 가능 여부"] === "가능" ? "불가능" : "가능",
-              };
-            } else {
-              return u;
-            }
-          })
-        );
-      },
-    },
-    {
-      text: "취소",
-      onClick: () => {
-        setAnchorEl(null);
-      },
-    },
-  ];
-  const datas = isModalOpen ? menuDatas.slice(1) : menuDatas;
-
   return (
     <div>
-      <h1 className="mb-6 text-[1.5rem] font-bold">강제 탈퇴 유저 리스트</h1>
+      <h1 className="mb-6 text-[1.5rem] font-bold">가입/탈퇴 유저 리스트</h1>
 
-      <Table columns={columns} datas={filteredForceResignUsers}>
-        <BasicMenu
+      <Table columns={columns} datas={users}>
+        <UserMenu
+          setIsModalOpen={setIsModalOpen}
           anchorEl={anchorEl}
           setAnchorEl={setAnchorEl}
-          menuDatas={datas}
+          setUsers={setUsers}
+          selectedId={selectedId}
+          selectedNickname={selectedNickname}
+          isTableModal={isModalOpen}
+          isResignUser={
+            users.find((user) => user.id === selectedId)?.["가입/탈퇴"] ===
+            "탈퇴"
+          }
         />
       </Table>
 

@@ -1,6 +1,8 @@
 // 전역 상수
 
-export const textInputBasicStyle = {};
+export const textInputBasicStyle = {
+  grayBorder: "border-[1px] border-solid border-[#ccc] rounded-lg",
+};
 
 export const textInputStyle = {
   login:

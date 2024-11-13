@@ -1,5 +1,5 @@
 export default function TextInput({
-  type,
+  type = "text",
   text,
   onChange,
   placeHolder,
@@ -8,7 +8,7 @@ export default function TextInput({
   styles,
 }) {
   return (
-    <div className="relative text-white">
+    <div className="relative">
       <input
         type={type}
         value={text}

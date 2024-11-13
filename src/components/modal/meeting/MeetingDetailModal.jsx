@@ -6,21 +6,21 @@ import {
   getSpecificMeetingDetailDataFetch,
   meetingParticipantsFetch,
   meetingReviewDataFetch,
-} from "../../../../api/meeting";
+} from "../../../api/meeting";
 import {
   currentDateFormat2,
   formatTimeAgo,
   handleConsoleError,
-} from "../../../../common";
+} from "../../../common";
 
-import BasicModal from "../../BasicModal";
-import BasicTab2 from "../../../tab/BasicTab2";
-import TabContent from "../../../tab/TabContent";
-import MeetingSmallContentWrap from "../../../../pages/meetings/MeetingSmallContentWrap";
-import Table from "../../../table/Table";
-import Button from "../../../button/Button";
-import { btnBasicStyle } from "../../../../constants";
-import { Toast } from "../../../toast/Toast";
+import BasicModal from "../BasicModal";
+import BasicTab2 from "../../tab/BasicTab2";
+import TabContent from "../../tab/TabContent";
+import MeetingSmallContentWrap from "../../meeting/MeetingSmallContentWrap";
+import Table from "../../table/Table";
+import Button from "../../button/Button";
+import { btnBasicStyle } from "../../../constants";
+import { Toast } from "../../toast/Toast";
 
 import {
   CiLocationOn,
@@ -33,7 +33,7 @@ import { HiChevronLeft, HiChevronRight } from "react-icons/hi2";
 
 const MeetingDetailModal = ({
   accessToken,
-  isOpen,
+  isModalOpen,
   setIsModalOpen,
   selectedId,
   setAnchorEl,
@@ -46,7 +46,7 @@ const MeetingDetailModal = ({
   const [changeIdReivewDatas, setChangeIdReviewDatas] = useState([]);
 
   const { isLoading, error, data } = useQuery({
-    queryKey: ["meetingDetailDatas", isOpen],
+    queryKey: ["meetingDetailDatas", isModalOpen],
     queryFn: async () => {
       const result = await getSpecificMeetingDetailDataFetch(
         accessToken,
@@ -65,7 +65,7 @@ const MeetingDetailModal = ({
   }, [data?.state]);
 
   const { data: meetingParticipantDatas } = useQuery({
-    queryKey: ["meetingParticipantDatas", isOpen, participantsState],
+    queryKey: ["meetingParticipantDatas", isModalOpen, participantsState],
     queryFn: async () => {
       const result = await meetingParticipantsFetch(
         accessToken,
@@ -78,7 +78,7 @@ const MeetingDetailModal = ({
   });
 
   const { data: meetingReviewDatas } = useQuery({
-    queryKey: ["meetingReviewDatas", isOpen],
+    queryKey: ["meetingReviewDatas", isModalOpen],
     queryFn: async () => {
       const result = await meetingReviewDataFetch(
         accessToken,
@@ -100,7 +100,7 @@ const MeetingDetailModal = ({
       Toast("신청을 수락하였습니다.");
       return queryClient.invalidateQueries([
         "meetingParticipantDatas",
-        isOpen,
+        isModalOpen,
         participantsState,
       ]);
     },
@@ -112,7 +112,7 @@ const MeetingDetailModal = ({
       Toast("신청을 거절하였습니다.");
       return queryClient.invalidateQueries([
         "meetingParticipantDatas",
-        isOpen,
+        isModalOpen,
         participantsState,
       ]);
     },
@@ -122,7 +122,7 @@ const MeetingDetailModal = ({
       deleteMeetingReviewDataFetch(accessToken, reviewId),
     onSuccess: () => {
       Toast("리뷰를 삭제하였습니다.");
-      return queryClient.invalidateQueries(["meetingReviewDatas", isOpen]);
+      return queryClient.invalidateQueries(["meetingReviewDatas", isModalOpen]);
     },
   });
 
@@ -292,10 +292,10 @@ const MeetingDetailModal = ({
   }, [meetingReviewDatas]);
 
   useEffect(() => {
-    if (isOpen) {
+    if (isModalOpen) {
       setTabCount("1");
     }
-  }, [isOpen]);
+  }, [isModalOpen]);
 
   useEffect(() => {
     if (tabCount) {
@@ -311,7 +311,7 @@ const MeetingDetailModal = ({
 
   return (
     <BasicModal
-      isModalOpen={isOpen}
+      isModalOpen={isModalOpen}
       setIsModalOpen={setIsModalOpen}
       setAnchorEl={setAnchorEl}
     >
