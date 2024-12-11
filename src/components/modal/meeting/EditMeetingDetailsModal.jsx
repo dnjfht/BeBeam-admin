@@ -48,7 +48,6 @@ export default function EditMeetingDetailsModal({
     "음식",
     "맛집",
     "다이어트",
-    "음악",
     "카페",
     "공부",
     "코딩",
@@ -68,7 +67,7 @@ export default function EditMeetingDetailsModal({
   const [meetingPreviewImageList, setMeetingPreviewImageList] = useState([]);
 
   // 콘텐츠
-  const [deadlineDate, setDeadlineDate] = useState(null);
+  const [deadlineDate, setDeadlineDate] = useState("");
   const [meetingName, setMeetingName] = useState("");
   const [meetingDes, setMeetingDes] = useState("");
   const [selectionType, setSelectionType] = useState("");
@@ -129,13 +128,8 @@ export default function EditMeetingDetailsModal({
   });
 
   const handleEditMeeting = () => {
-    if (!deadlineDate) {
+    if (deadlineDate === "") {
       alert("모집 마감일을 입력해 주세요.");
-      return;
-    }
-
-    if (!thumbnailImage) {
-      alert("대표 사진을 설정해 주세요.");
       return;
     }
 
@@ -166,11 +160,6 @@ export default function EditMeetingDetailsModal({
 
     if (detailLocation === "") {
       alert("모임 상세 주소를 입력해 주세요.");
-      return;
-    }
-
-    if (!hostImage) {
-      alert("호스트 사진을 설정해 주세요.");
       return;
     }
 

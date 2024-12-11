@@ -135,8 +135,6 @@ export default function Users({ accessToken }) {
     }
   }, [datas]);
 
-  console.log(datas);
-
   return (
     <div>
       <h1 className="mb-6 text-[1.5rem] font-bold">

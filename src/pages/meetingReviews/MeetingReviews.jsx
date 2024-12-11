@@ -203,11 +203,11 @@ export default function MeetingReviews({ accessToken }) {
 
   const totalPages = datas?.pageInfo?.totalPages;
 
-  console.log(datas);
-
   return (
     <div>
-      <h1 className="mb-6 text-[1.5rem] font-bold">모임 리뷰 리스트</h1>
+      <h1 className="mb-6 text-[1.5rem] font-bold">
+        모임 리뷰 리스트(총 {datas?.pageInfo?.totalElements}개)
+      </h1>
 
       <div className="items-center justify-between w-full mb-3 sm:flex">
         <TextInput

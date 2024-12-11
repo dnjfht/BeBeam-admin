@@ -143,7 +143,9 @@ export default function CreateRegMeetings({ accessToken }) {
 
   return (
     <div>
-      <h1 className="mb-6 text-[1.5rem] font-bold">정기모임 개설</h1>
+      <h1 className="mb-6 text-[1.5rem] font-bold">
+        정기모임 개설 및 수정(총 {datas?.pageInfo?.totalElements}개)
+      </h1>
       <div className="flex justify-end w-full mb-3">
         <button
           onClick={() => setOpen(true)}

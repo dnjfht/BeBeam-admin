@@ -197,7 +197,9 @@ export const editRegularMeeting = async (
   try {
     const formData = new FormData();
 
-    formData.append("thumbnailImage", thumbnailImage);
+    if (thumbnailImage) {
+      formData.append("thumbnailImage", thumbnailImage);
+    }
 
     if (editMeetingImageFileList.length) {
       editMeetingImageFileList.forEach((file) => {
@@ -205,7 +207,9 @@ export const editRegularMeeting = async (
       });
     }
 
-    formData.append("hostImage", hostImage);
+    if (hostImage) {
+      formData.append("hostImage", hostImage);
+    }
 
     formData.append(
       "data",

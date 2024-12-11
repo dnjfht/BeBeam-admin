@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TextField, Modal, Input } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createRegularMeeting } from "../../../api/meeting";
@@ -32,7 +32,6 @@ export default function CreateMeetingModal({
     "음식",
     "맛집",
     "다이어트",
-    "음악",
     "카페",
     "공부",
     "코딩",
@@ -46,7 +45,7 @@ export default function CreateMeetingModal({
   // 프리뷰
   const [thumbnailPreviewImage, setThumbnailPreviewImage] = useState("");
   const [HostPreviewImage, setHostPreviewImage] = useState("");
-  const [meetingPreviewImageList, setMeetingPreivewImageList] = useState([]);
+  const [meetingPreviewImageList, setMeetingPreviewImageList] = useState([]);
 
   // 콘텐츠
   const [deadlineDate, setDeadlineDate] = useState(null);
@@ -99,6 +98,7 @@ export default function CreateMeetingModal({
       ),
     onSuccess: () => {
       Toast("모임을 생성하였습니다.");
+
       return queryClient.invalidateQueries([
         "regularMeetingDatas",
         accessToken,
@@ -218,6 +218,30 @@ export default function CreateMeetingModal({
     ) : (
       <PhotoCamera />
     );
+
+  useEffect(() => {
+    if (!isModalOpen) {
+      setThumbnailPreviewImage("");
+      setThumbnailImage(null);
+      setDeadlineDate("");
+      setMeetingName("");
+      setMeetingDes("");
+      setSelectionType("선택해주세요.");
+      setMinParticipants(0);
+      setMaxParticipants(0);
+      setLocation("");
+      setHostName("");
+      setHostPreviewImage("");
+      setHostImage(null);
+      setHostDes("");
+      setPrice(0);
+      setMeetingPreviewImageList([]);
+      setMeetingImageList([]);
+      setSchedules([]);
+      setGuidances([]);
+      setSelectedTags([]);
+    }
+  }, [isModalOpen]);
 
   return (
     <BasicModal
@@ -342,9 +366,6 @@ export default function CreateMeetingModal({
             label="모임 장소를 선택해주세요."
             name="modelAddress"
             value={location}
-            onChange={(e) => {
-              console.log(e.target);
-            }}
             placeholder="모임 장소를 선택해주세요."
           />
           <button
@@ -465,7 +486,7 @@ export default function CreateMeetingModal({
                 const newImages = files.map((file) =>
                   URL.createObjectURL(file)
                 );
-                setMeetingPreivewImageList((prev) => [...prev, ...newImages]);
+                setMeetingPreviewImageList((prev) => [...prev, ...newImages]);
               }}
               style={{ display: "none" }}
             />
@@ -488,7 +509,7 @@ export default function CreateMeetingModal({
                     })
                   );
 
-                  setMeetingPreivewImageList((prev) =>
+                  setMeetingPreviewImageList((prev) =>
                     prev.filter((_, idx) => {
                       return idx !== index;
                     })

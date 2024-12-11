@@ -176,11 +176,12 @@ export default function DeletedMeetingReviews({ accessToken }) {
   ];
 
   const totalPages = datas?.pageInfo?.totalPages;
-  console.log(datas);
 
   return (
     <div>
-      <h1 className="mb-6 text-[1.5rem] font-bold">삭제된 모임 리뷰 리스트</h1>
+      <h1 className="mb-6 text-[1.5rem] font-bold">
+        삭제된 모임 리뷰 리스트(총 {datas?.pageInfo?.totalElements}개)
+      </h1>
 
       <Table columns={columns} datas={datas?.reviews} height="80vh">
         <UserMenu

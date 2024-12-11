@@ -8,7 +8,6 @@ import TabContent from "./TabContent";
 
 export default function BasicTab({ tabList, children }) {
   const [tab, setTab] = useRecoilState(TabState);
-  console.log(tab);
 
   const handleChange = (e, tab) => {
     setTab(tab);

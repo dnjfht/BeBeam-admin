@@ -32,6 +32,8 @@ function App() {
     setAccessToken(accessToken);
   }, [setAccessToken]);
 
+  console.log("accessToken", accessToken);
+
   const router = createBrowserRouter([
     {
       path: "/",

@@ -130,7 +130,9 @@ export default function Meetings({ accessToken }) {
 
   return (
     <div>
-      <h1 className="mb-4 text-[1.5rem] font-bold">모임 리스트</h1>
+      <h1 className="mb-4 text-[1.5rem] font-bold">
+        모임 리스트(총 {datas?.pageInfo?.totalElements}개)
+      </h1>
 
       <div className="flex items-center justify-end w-full mb-3 gap-x-2">
         <BasicSelect
