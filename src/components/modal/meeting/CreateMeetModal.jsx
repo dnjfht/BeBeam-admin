@@ -37,6 +37,7 @@ export default function CreateMeetingModal({
     "공부",
     "코딩",
   ];
+
   // 이미지
   const [thumbnailImage, setThumbnailImage] = useState(null);
   const [hostImage, setHostImage] = useState(null);
@@ -71,10 +72,6 @@ export default function CreateMeetingModal({
     } else if (selectedTags.length < 3) {
       setSelectedTags([...selectedTags, tag]);
     }
-  };
-
-  const addSchedule = () => {
-    setSchedules((prev) => [...prev, { schedule: null, content: "" }]);
   };
 
   const createRegularMeetingMutation = useMutation({
@@ -575,7 +572,9 @@ export default function CreateMeetingModal({
         ))}
 
         <button
-          onClick={addSchedule}
+          onClick={() => {
+            setSchedules((prev) => [...prev, { schedule: null, content: "" }]);
+          }}
           className="w-full py-2 bg-[#121212] rounded-lg text-white text-[0.875rem]"
         >
           추가하기
