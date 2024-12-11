@@ -97,6 +97,20 @@ export default function Meetings({ accessToken }) {
       },
     },
     {
+      text: "모임 삭제",
+      onClick: () => {
+        if (window.confirm("정말 삭제하시겠습니까?")) {
+          try {
+            deleteMeetingMutation.mutate();
+          } catch (error) {
+            Toast("모임 삭제를 실패하였습니다.");
+          }
+        }
+
+        setAnchorEl(null);
+      },
+    },
+    {
       text: "취소",
       onClick: () => {
         setAnchorEl(null);

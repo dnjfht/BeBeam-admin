@@ -307,8 +307,6 @@ const MeetingDetailModal = ({
     meetingParticipantDatas?.pageInfo?.totalPages ?? 1;
   const reviewsTotalPages = meetingReviewDatas?.pageInfo?.totalPages ?? 1;
 
-  console.log("meetingReviewDatas", meetingReviewDatas);
-
   return (
     <BasicModal
       isModalOpen={isModalOpen}

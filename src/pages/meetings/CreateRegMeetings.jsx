@@ -8,7 +8,7 @@ import BasicMenu from "../../components/menu/BasicMenu";
 import { Toast } from "../../components/toast/Toast";
 import Button from "../../components/button/Button";
 import { btnBasicStyle } from "../../constants";
-import MeetingModal from "../../components/modal/meeting/MeetingDetailModal";
+import MeetingDetailModal from "../../components/modal/meeting/MeetingDetailModal";
 import CreateMeetingModal from "../../components/modal/meeting/CreateMeetModal";
 import EditMeetingDetailsModal from "../../components/modal/meeting/EditMeetingDetailsModal";
 
@@ -198,9 +198,9 @@ export default function CreateRegMeetings({ accessToken }) {
         setIsModalOpen={setOpen}
         page={page}
       />
-      <MeetingModal
+      <MeetingDetailModal
         accessToken={accessToken}
-        isOpen={isMeetingDetailsModalOpen}
+        isModalOpen={isMeetingDetailsModalOpen}
         setIsModalOpen={setIsMeetingDetailsModalOpen}
         selectedId={selectedId}
         setAnchorEl={setAnchorEl}
@@ -210,6 +210,7 @@ export default function CreateRegMeetings({ accessToken }) {
         isModalOpen={isEditMeetingDetailsModalOpen}
         setIsModalOpen={setIsEditMeetingDetailsModalOpen}
         selectedId={selectedId}
+        page={page}
       />
     </div>
   );

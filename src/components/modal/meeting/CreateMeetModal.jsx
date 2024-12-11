@@ -18,7 +18,6 @@ export default function CreateMeetingModal({
 }) {
   const queryClient = useQueryClient();
 
-  const selectionOptions = ["선발형", "선착순"];
   const hashtagOptions = [
     "야외활동",
     "실내활동",
@@ -297,7 +296,7 @@ export default function CreateMeetingModal({
         <h1 className="mb-4 text-[#121212]">모집형태: {selectionType}</h1>
 
         <div className="grid grid-cols-2 gap-x-2">
-          {selectionOptions.map((option) => (
+          {["선발형", "선착순"].map((option) => (
             <button
               key={option}
               className={`${

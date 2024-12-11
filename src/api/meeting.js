@@ -170,6 +170,85 @@ export const createRegularMeeting = async (
   }
 };
 
+// 정기모임 수정
+export const editRegularMeeting = async (
+  accessToken,
+  meetingId,
+  thumbnailImage,
+  meetingName,
+  meetingDes,
+  recruitmentStatus,
+  recruitmentType,
+  selectionType,
+  minParticipants,
+  maxParticipants,
+  deadlineDate,
+  location,
+  hostImage,
+  hostName,
+  hostDes,
+  price,
+  noEditMeetingImageList,
+  editMeetingImageFileList,
+  schedules,
+  guidances,
+  selectedTags
+) => {
+  try {
+    const formData = new FormData();
+
+    formData.append("thumbnailImage", thumbnailImage);
+
+    if (editMeetingImageFileList.length) {
+      editMeetingImageFileList.forEach((file) => {
+        formData.append("files", file);
+      });
+    }
+
+    formData.append("hostImage", hostImage);
+
+    formData.append(
+      "data",
+      new Blob(
+        [
+          JSON.stringify({
+            name: meetingName,
+            recruitmentStatus: recruitmentStatus,
+            recruitmentType: recruitmentType,
+            selectionType: selectionType,
+            minParticipants: minParticipants,
+            maxParticipants: maxParticipants,
+            meetingDatetime: deadlineDate,
+            location: location,
+            paymentAmount: price,
+            introduction: meetingDes,
+            schedules: schedules,
+            hashtags: selectedTags,
+            info: guidances,
+            hostName: hostName,
+            hostDescription: hostDes,
+            existingImages: noEditMeetingImageList,
+          }),
+        ],
+        { type: "application/json" }
+      )
+    );
+
+    const res = await axios({
+      method: "patch",
+      url: `https://prod.be-beam.site/api/admin-x8kp62iw/v1/meetings/${meetingId}`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      data: formData,
+    });
+    return res.data.result;
+  } catch (error) {
+    console.error("Error Edit Meeting:", error);
+    throw error;
+  }
+};
+
 // 전체모임 신청자들/참여자들 데이터 받아오기
 export const allMeetingParticipantsFetch = async (
   accessToken,
